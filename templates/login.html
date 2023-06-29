@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='login.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        <form action="/login" method="post">
+            <label for="registration">Matrícula:</label>
+            <input type="text" id="registration" name="registration" required><br><br>
+            <label for="password">Senha:</label>
+            <input type="password" id="password" name="password" required><br><br>
+            <input type="submit" value="Login">
+        </form>
+        
+        <p>Não possui um cadastro? <a href="/register">Crie uma conta</a></p>
+    </div>
+</body>
+</html>
