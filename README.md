@@ -7,10 +7,15 @@ Repositório do projeto
 https://github.com/Mathweuzz/Proj-final-EngSoft
 
 Participantes
+
 Eduardo Marques Pereira - 211021004
+
 Gabriel Amaro Baxto - 190087331
+
 Mateus Gomes de Araújo - 202014440
+
 Yan Tavares de Oliveira - 202014323
+
 
 Planejamento inicial
 Para essa segunda entrega, novamente nos separamos e dividimos as tarefas para concluir um MVP do projeto. Para isso deveriamos cumprir os requisitos mínimos e assim possibilitar a aplicação de exames. Logo, dividimos para conquistar, um ficaria com um recurso e o relatório, e o restante dividiria os recursos entre si por nível de complexidade. No final de semana nos reuniriamos e testariamos algumas requisições para validar a utilização do sistema.
