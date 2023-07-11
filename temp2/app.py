@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, request, jsonify, g, session, render_template
+from flask import Flask, request, jsonify, session, render_template
 import secrets
 
 secret_key = secrets.token_hex(16)
@@ -26,19 +26,19 @@ class Question(db.Model):
 
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    exam_id = db.Column(db.Integer, db.ForeignKey('exam.id'), nullable=False)
-    question_id = db.Column(db.Integer, db.ForeignKey(
+    exame_id = db.Column(db.Integer, db.ForeignKey('exam.id'), nullable=False)
+    questao_id = db.Column(db.Integer, db.ForeignKey(
         'question.id'), nullable=False)
-    answer = db.Column(db.String(500), nullable=False)
+    resposta = db.Column(db.String(500), nullable=False)
 
-    exam = db.relationship('Exam', backref=db.backref('answers', lazy=True))
-    question = db.relationship(
-        'Question', backref=db.backref('answers', lazy=True))
+    exam = db.relationship(
+        'Exam', backref=db.backref('answers', lazy='dynamic'))
+    question = db.relationship('Question')
 
 
 class Exam(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.String(50), nullable=False)
+    status = db.Column(db.String(50), nullable=False, default='aberto')
     answered = db.Column(db.Boolean, nullable=False)
     questions = db.relationship(
         'Question', secondary='exam_question', backref=db.backref('exams', lazy='dynamic'))
@@ -50,12 +50,6 @@ exam_question = db.Table('exam_question',
                          db.Column('question_id', db.Integer, db.ForeignKey(
                              'question.id'), primary_key=True)
                          )
-
-
-@app.before_request
-def before_request():
-    if request.is_json:
-        request.headers['Content-Type'] = 'application/json'
 
 
 @app.before_first_request
@@ -105,7 +99,9 @@ def seed_data():
 
 
 def autenticado():
-    if 'usuario' in g:
+    # Example logic to check if the user is authenticated
+    # You should replace this with your own authentication logic
+    if 'usuario_id' in session:
         return True
     return False
 
@@ -139,32 +135,55 @@ def login():
 
 
 @app.route('/exames', methods=['POST'])
-def cadastrar_exame():
+def create_exam():
     if 'usuario_id' not in session:
         return jsonify({"error": "Acesso não autorizado"})
+
     data = request.get_json()
-    questoes = data['questoes']
-    novo_exame = Exam(questoes=questoes, status='aberto', respondido=False)
-    db.session.add(novo_exame)
+    questions = data.get('questions')
+
+    if not questions or not isinstance(questions, list):
+        return jsonify({"error": "Questões inválidas"})
+
+    new_exam = Exam(answered=False)
+    db.session.add(new_exam)
+
+    for question_data in questions:
+        question_id = question_data.get('id')
+        question = Question.query.get(int(question_id))
+        if question:
+            new_exam.questions.append(question)
+
     db.session.commit()
-    return jsonify({"message": "Exame cadastrado com sucesso"})
+
+    return jsonify({"message": "Exame criado com sucesso"}), 201
 
 
 @app.route('/exames/<int:exame_id>/responder', methods=['POST'])
 def responder_exame(exame_id):
     if 'usuario_id' not in session:
         return jsonify({"error": "Acesso não autorizado"})
+
     exame = Exam.query.get(exame_id)
-    if exame and exame.status == 'aberto' and not exame.respondido:
+    if exame and exame.status == 'aberto' and not exame.answered:
         data = request.get_json()
-        respostas = data['respostas']
+        respostas = data.get('respostas')
+
+        if not respostas:
+            return jsonify({"error": "Nenhuma resposta fornecida"})
+
         for questao_id, resposta in respostas.items():
             nova_resposta = Answer(
-                exame_id=exame_id, questao_id=questao_id, resposta=resposta)
+                exame_id=exame_id,
+                questao_id=int(questao_id),
+                resposta=resposta
+            )
             db.session.add(nova_resposta)
-        exame.respondido = True
+
+        exame.answered = True
         db.session.commit()
         return jsonify({"message": "Exame respondido com sucesso"})
+
     return jsonify({"error": "Exame não encontrado ou não está aberto para resposta"})
 
 
@@ -182,24 +201,30 @@ def relatorio_exame(exame_id):
         return jsonify({"error": "Exame não está encerrado"})
 
     respostas = []
-    for questao in exame.questoes:
+    for question in exame.questions:
         resposta = Answer.query.filter_by(
-            exame_id=exame.id, questao_id=questao.id).first()
+            exame_id=exame_id, questao_id=question.id).first()
         if resposta:
             respostas.append({
-                "pergunta": questao.pergunta,
-                "resposta": resposta.resposta
+                "pergunta": question.question,
+                "resposta": resposta.resposta,
+                "correta": question.answer
+            })
+        else:
+            respostas.append({
+                "pergunta": question.question,
+                "resposta": None,
+                "correta": question.answer
             })
 
     return jsonify({"respostas": respostas})
 
 
 @app.route('/questions', methods=['POST'])
-def create_question(request):
-    data = request.get_json()
-    question_text = data.get('question')
-    answer_text = data.get('answer')
-
+def create_question():
+    request_data = request.get_json()
+    question_text = request_data.get('question')
+    answer_text = request_data.get('answer')
     if not question_text or not answer_text:
         return jsonify({'error': 'Missing required fields'}), 400
 
@@ -208,6 +233,22 @@ def create_question(request):
     db.session.commit()
 
     return jsonify({'message': 'Question created successfully'}), 201
+
+
+@app.route('/exames/<int:exame_id>/close', methods=['POST'])
+def close_exam(exame_id):
+    if not autenticado():
+        return jsonify({"error": "Acesso não autorizado"})
+
+    exame = Exam.query.get(exame_id)
+
+    if not exame:
+        return jsonify({"error": "Exame não encontrado"})
+
+    exame.status = 'encerrado'
+    db.session.commit()
+
+    return jsonify({"message": "Exame encerrado com sucesso"})
 
 
 if __name__ == '__main__':
