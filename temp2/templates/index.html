@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Flask App</title>
+</head>
+<body>
+  <h1>Welcome to the Flask App!</h1>
+  
+  <h2>Register</h2>
+  <form id="registrationForm" action="/registro" method="POST">
+    <!-- Registration form fields -->
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="usuario" required><br><br>
+    
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br><br>
+    
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="senha" required><br><br>
+    
+    <label for="profile">Profile:</label>
+    <select id="profile" name="perfil" required>
+      <option value="professor">Professor</option>
+      <option value="estudante">Estudante</option>
+    </select><br><br>
+    
+    <input type="submit" value="Register">
+  </form>
+  
+  <h2>Login</h2>
+  <form id="loginForm" action="/login" method="POST">
+    <!-- Login form fields -->
+    <label for="loginUsername">Username:</label>
+    <input type="text" id="loginUsername" name="usuario" required><br><br>
+    
+    <label for="loginPassword">Password:</label>
+    <input type="password" id="loginPassword" name="senha" required><br><br>
+    
+    <input type="submit" value="Login">
+  </form>
+  
+  <h2>Create Question</h2>
+  <form id="questionForm" action="/questions" method="POST">
+    <!-- Question form fields -->
+    <label for="questionText">Question:</label>
+    <input type="text" id="questionText" name="question" required><br><br>
+    
+    <label for="answerText">Answer:</label>
+    <input type="text" id="answerText" name="answer" required><br><br>
+    
+    <input type="submit" value="Create Question">
+  </form>
+  
+  <h2>Create Exam</h2>
+  <form id="examForm" action="/exames" method="POST">
+    <!-- Exam form fields -->
+    <label for="examQuestions">Questions:</label>
+    <input type="text" id="examQuestions" name="questoes" required><br><br>
+    
+    <input type="submit" value="Create Exam">
+  </form>
+  
+  <h2>Answer Question</h2>
+  <form id="answerForm" action="/exames/1/responder" method="POST">
+    <!-- Answer form fields -->
+    <label for="questionId">Question ID:</label>
+    <input type="number" id="questionId" name="question_id" required><br><br>
+    
+    <label for="answerText">Answer:</label>
+    <input type="text" id="answerText" name="answer" required><br><br>
+    
+    <input type="submit" value="Answer Question">
+  </form>
+  
+  <h2>Generate Report</h2>
+  <form id="reportForm" action="/exames/1/relatorio" method="GET">
+    <!-- Report form fields -->
+    <input type="submit" value="Generate Report">
+  </form>
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    // Registration form submission
+    $('#registrationForm').submit(function(event) {
+      event.preventDefault();
+      
+      var form = $(this);
+      var url = form.attr('action');
+      var formData = form.serialize();
+      
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: formData,
+        success: function(response) {
+          alert(response.message);
+          form[0].reset();
+        },
+        error: function(xhr, textStatus, error) {
+          var errorMessage = xhr.responseJSON.error;
+          alert(errorMessage);
+        }
+      });
+    });
+    
+    // Login form submission
+    $('#loginForm').submit(function(event) {
+      event.preventDefault();
+      
+      var form = $(this);
+      var url = form.attr('action');
+      var formData = form.serialize();
+      
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: formData,
+        success: function(response) {
+          alert('Login successful! User profile: ' + response.perfil);
+          form[0].reset();
+        },
+        error: function(xhr, textStatus, error) {
+          var errorMessage = xhr.responseJSON.error;
+          alert(errorMessage);
+        }
+      });
+    });
+    
+    // Question form submission
+    $('#questionForm').submit(function(event) {
+      event.preventDefault();
+      
+      var form = $(this);
+      var url = form.attr('action');
+      var formData = form.serialize();
+      
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: formData,
+        success: function(response) {
+          alert(response.message);
+          form[0].reset();
+        },
+        error: function(xhr, textStatus, error) {
+          var errorMessage = xhr.responseJSON.error;
+          alert(errorMessage);
+        }
+      });
+    });
+    
+    // Exam form submission
+    $('#examForm').submit(function(event) {
+      event.preventDefault();
+      
+      var form = $(this);
+      var url = form.attr('action');
+      var formData = form.serialize();
+      
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: formData,
+        success: function(response) {
+          alert(response.message);
+          form[0].reset();
+        },
+        error: function(xhr, textStatus, error) {
+          var errorMessage = xhr.responseJSON.error;
+          alert(errorMessage);
+        }
+      });
+    });
+    
+    // Answer form submission
+    $('#answerForm').submit(function(event) {
+      event.preventDefault();
+      
+      var form = $(this);
+      var url = form.attr('action');
+      var formData = form.serialize();
+      
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: formData,
+        success: function(response) {
+          alert(response.message);
+          form[0].reset();
+        },
+        error: function(xhr, textStatus, error) {
+          var errorMessage = xhr.responseJSON.error;
+          alert(errorMessage);
+        }
+      });
+    });
+    
+    // Report form submission
+    $('#reportForm').submit(function(event) {
+      event.preventDefault();
+      
+      var form = $(this);
+      var url = form.attr('action');
+      
+      $.ajax({
+        type: 'GET',
+        url: url,
+        success: function(response) {
+          // Handle report data
+        },
+        error: function(xhr, textStatus, error) {
+          var errorMessage = xhr.responseJSON.error;
+          alert(errorMessage);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

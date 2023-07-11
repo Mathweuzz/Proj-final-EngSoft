@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -25,6 +26,7 @@ class User(db.Model):
             'profile': self.profile
         }
 
+
 class Question(db.Model):
     __tablename__ = 'questions'
 
@@ -43,16 +45,19 @@ class Question(db.Model):
             'answer': self.answer
         }
 
+
 class Answer(db.Model):
     __tablename__ = 'answers'
 
     id = db.Column(db.Integer, primary_key=True)
     exam_id = db.Column(db.Integer, db.ForeignKey('exams.id'), nullable=False)
-    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey(
+        'questions.id'), nullable=False)
     answer = db.Column(db.String(500), nullable=False)
 
     exam = db.relationship('Exam', backref=db.backref('answers', lazy=True))
-    question = db.relationship('Question', backref=db.backref('answers', lazy=True))
+    question = db.relationship(
+        'Question', backref=db.backref('answers', lazy=True))
 
     def __init__(self, exam_id, question_id, answer):
         self.exam_id = exam_id
@@ -66,6 +71,7 @@ class Answer(db.Model):
             'question_id': self.question_id,
             'answer': self.answer
         }
+
 
 class Exam(db.Model):
     __tablename__ = 'exams'

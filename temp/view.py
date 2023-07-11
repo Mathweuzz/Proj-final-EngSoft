@@ -1,5 +1,6 @@
-from flask import jsonify, request
-from models import db, User, Exam, Question, Answer
+from flask import jsonify
+from model import db, User, Exam, Question, Answer
+
 
 def register_user(request):
     data = request.get_json()
@@ -15,11 +16,13 @@ def register_user(request):
     if existing_user:
         return jsonify({'error': 'Username already exists'}), 409
 
-    new_user = User(username=username, email=email, password=password, profile=profile)
+    new_user = User(username=username, email=email,
+                    password=password, profile=profile)
     db.session.add(new_user)
     db.session.commit()
 
     return jsonify({'message': 'User registered successfully'}), 201
+
 
 def login_user(request):
     data = request.get_json()
@@ -34,6 +37,7 @@ def login_user(request):
         return jsonify({'profile': user.profile}), 200
 
     return jsonify({'error': 'Invalid username or password'}), 401
+
 
 def create_exam(request):
     data = request.get_json()
@@ -55,6 +59,7 @@ def create_exam(request):
 
     return jsonify({'message': 'Exam created successfully'}), 201
 
+
 def submit_exam(request, exam_id):
     data = request.get_json()
     answers = data.get('answers')
@@ -69,13 +74,15 @@ def submit_exam(request, exam_id):
     for question_id, answer in answers.items():
         question = Question.query.get(question_id)
         if question:
-            new_answer = Answer(exam_id=exam_id, question_id=question_id, answer=answer)
+            new_answer = Answer(
+                exam_id=exam_id, question_id=question_id, answer=answer)
             db.session.add(new_answer)
 
     exam.answered = True
     db.session.commit()
 
     return jsonify({'message': 'Exam submitted successfully'}), 200
+
 
 def get_exam_report(exam_id):
     exam = Exam.query.get(exam_id)
@@ -97,3 +104,18 @@ def get_exam_report(exam_id):
         })
 
     return jsonify({'respostas': response}), 200
+
+
+def create_question(request):
+    data = request.get_json()
+    question_text = data.get('question')
+    answer_text = data.get('answer')
+
+    if not question_text or not answer_text:
+        return jsonify({'error': 'Missing required fields'}), 400
+
+    new_question = Question(question=question_text, answer=answer_text)
+    db.session.add(new_question)
+    db.session.commit()
+
+    return jsonify({'message': 'Question created successfully'}), 201
