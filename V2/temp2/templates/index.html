@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Flask App</title>
+</head>
+<body>
+  <h1>Welcome to Mudow!</h1>
+  
+  <h2>Register</h2>
+  <form id="registrationForm" action="/registro" method="POST">
+    <!-- Registration form fields -->
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="usuario" required><br><br>
+    
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br><br>
+    
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="senha" required><br><br>
+    
+    <label for="profile">Profile:</label>
+    <select id="profile" name="perfil" required>
+      <option value="professor">Professor</option>
+      <option value="estudante">Estudante</option>
+    </select><br><br>
+    
+    <input type="submit" value="Register">
+  </form>
+  
+  <h2>Login</h2>
+  <form id="loginForm" action="/login" method="POST">
+    <!-- Login form fields -->
+    <label for="loginUsername">Username:</label>
+    <input type="text" id="loginUsername" name="usuario" required><br><br>
+    
+    <label for="loginPassword">Password:</label>
+    <input type="password" id="loginPassword" name="senha" required><br><br>
+    
+    <input type="submit" value="Login">
+  </form>
+  
+  <h2>Create Question</h2>
+  <form id="questionForm" action="/questions" method="POST">
+    <!-- Question form fields -->
+    <label for="questionText">Question:</label>
+    <input type="text" id="questionText" name="question" required><br><br>
+    
+    <label for="answerText">Answer:</label>
+    <input type="text" id="answerText" name="answer" required><br><br>
+    
+    <input type="submit" value="Create Question">
+  </form>
+  
+  <h2>Create Exam</h2>
+  <form id="examForm" action="/exames" method="POST">
+    <!-- Exam form fields -->
+    <form id="examForm" action="/exames" method="post">
+      <div>
+        <label for="questionSelect">Select a Question:</label>
+        <select id="questionSelect" name="questionSelect">
+          <option value="1">Question 1</option>
+          <option value="2">Question 2</option>
+          <!-- Add more options as needed -->
+        </select>
+        <button type="button" id="addQuestionBtn">Add Question</button>
+      </div>
+      
+      <div id="selectedQuestionsContainer">
+        <!-- Selected questions will be dynamically added here -->
+      </div>
+      
+      <button type="submit">Create Exam</button>
+    </form>
+    
+    <h2>Answer Question</h2>
+    <!-- Answer form fields -->
+
+    <form id="responderExameForm">
+      <label for="exameId">Exame ID:</label>
+      <input type="text" id="exameId" name="exameId" required>
+      <br><br>
+      <label for="respostas">Respostas:</label>
+      <br>
+      <textarea id="respostas" name="respostas" rows="5" required></textarea>
+      <br><br>
+      <button type="submit">Responder Exame</button>
+    </form>
+    
+  
+  <h2>Generate Report</h2>
+  <form id="reportForm">
+    <label for="exameId">Exam ID:</label>
+    <input type="text" id="exameId" name="exameId" required>
+    <br><br>
+    <button type="submit">Generate Report</button>
+  </form>
+
+  <h2>Close Exam</h2>
+  <form id="closeExamForm">
+    <label for="exameId">Exam ID:</label>
+    <input type="text" id="exameId" name="exameId" required>
+    <br><br>
+    <button type="submit">Close Exam</button>
+  </form>
+  
+  
+  
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    // Registration form submission
+    $('#registrationForm').submit(function(event) {
+      event.preventDefault();
+      
+      var form = $(this);
+      var url = form.attr('action');
+      var formData = form.serializeArray(); // Serialize form data as an array of objects
+      
+      var jsonData = {}; // Create an empty JavaScript object
+      
+      // Convert form data to JSON object
+      $.each(formData, function(index, field) {
+        jsonData[field.name] = field.value;
+      });
+      
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(jsonData), // Convert JSON object to a string
+        contentType: 'application/json', // Set content type to JSON
+        success: function(response) {
+          alert(response.message);
+          form[0].reset();
+        },
+        error: function(xhr, textStatus, error) {
+          var errorMessage = xhr.responseJSON.error;
+          alert(errorMessage);
+        }
+      });
+    });
+    
+    // Login form submission
+    $('#loginForm').submit(function(event) {
+      event.preventDefault();
+      
+      var form = $(this);
+      var url = form.attr('action');
+      var formData = form.serializeArray(); // Serialize form data as an array of objects
+      
+      var jsonData = {}; // Create an empty JavaScript object
+      
+      // Convert form data to JSON object
+      $.each(formData, function(index, field) {
+        jsonData[field.name] = field.value;
+      });
+      
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(jsonData), // Convert JSON object to a string
+        contentType: 'application/json', // Set content type to JSON
+        success: function(response) {
+          alert('Login successful! User profile: ' + response.perfil);
+          form[0].reset();
+        },
+        error: function(xhr, textStatus, error) {
+          var errorMessage = xhr.responseJSON.error;
+          alert(errorMessage);
+        }
+      });
+    });
+    
+    // Question form submission
+  $('#questionForm').submit(function(event) {
+    event.preventDefault();
+    
+    var form = $(this);
+    var url = form.attr('action');
+    var formData = form.serializeArray(); // Serialize form data as an array of objects
+    
+    var jsonData = {}; // Create an empty JavaScript object
+    
+    // Convert form data to JSON object
+    $.each(formData, function(index, field) {
+      jsonData[field.name] = field.value;
+    });
+    
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: JSON.stringify(jsonData), // Convert JSON object to a string
+      contentType: 'application/json', // Set content type to JSON
+      dataType: 'json', // Expect JSON response
+      success: function(response) {
+        alert(response.message);
+        form[0].reset();
+      },
+      error: function(xhr, textStatus, error) {
+        var errorMessage = xhr.responseJSON.error;
+        alert(errorMessage);
+      }
+    });
+  });
+
+    
+    // Exam form submission
+    $(document).ready(function() {
+      var selectedQuestions = []; // Store the selected questions
+      
+      // Add question button click event handler
+      $('#addQuestionBtn').click(function() {
+        var questionSelect = $('#questionSelect');
+        var selectedOption = questionSelect.find('option:selected');
+        
+        var questionId = selectedOption.val();
+        var questionText = selectedOption.text();
+        
+        // Check if the question is already selected
+        if (selectedQuestions.some(function(q) { return q.id === questionId; })) {
+          alert('Question already selected');
+          return;
+        }
+        
+        // Create a question object and add it to selectedQuestions
+        var questionObject = { id: questionId, text: questionText };
+        selectedQuestions.push(questionObject);
+        
+        // Create a div to display the selected question
+        var questionDiv = $('<div>').text(questionText);
+        
+        // Add a hidden input field to submit the question ID
+        var questionInput = $('<input>')
+          .attr('type', 'hidden')
+          .attr('name', 'questions[]')
+          .val(questionId);
+        
+        // Append the question div and input field to the selectedQuestionsContainer
+        $('#selectedQuestionsContainer').append(questionDiv);
+        $('#selectedQuestionsContainer').append(questionInput);
+        
+        // Reset the question select field
+        questionSelect.val('');
+      });
+      
+      // Exam form submission
+      $('#examForm').submit(function(event) {
+        event.preventDefault();
+        
+        var form = $(this);
+        var url = form.attr('action');
+        
+        $.ajax({
+          type: 'POST',
+          url: url,
+          data: JSON.stringify({ questions: selectedQuestions }),
+          contentType: 'application/json',
+          success: function(response) {
+            alert(response.message);
+            form[0].reset();
+            selectedQuestions = []; // Reset the selected questions
+            $('#selectedQuestionsContainer').empty(); // Clear the selected questions display
+          },
+          error: function(xhr, textStatus, error) {
+            var errorMessage = xhr.responseJSON.error;
+            alert(errorMessage);
+          }
+        });
+      });
+    });
+    
+    // Answer form submission
+    $(document).ready(function() {
+      $('#responderExameForm').submit(function(event) {
+        event.preventDefault();
+    
+        var form = $(this);
+        var exameId = form.find('#exameId').val();
+        var respostas = form.find('#respostas').val();
+    
+        var jsonData = {
+          respostas: JSON.parse(respostas)
+        };
+    
+        $.ajax({
+          type: 'POST',
+          url: '/exames/' + exameId + '/responder',
+          data: JSON.stringify(jsonData),
+          contentType: 'application/json',
+          success: function(response) {
+            alert(response.message);
+            form[0].reset();
+          },
+          error: function(xhr, textStatus, error) {
+            var errorMessage = xhr.responseJSON.error;
+            alert(errorMessage);
+          }
+        });
+      });
+    });
+    
+    
+    // Report form submission
+    $(document).ready(function() {
+      $('#reportForm').submit(function(event) {
+        event.preventDefault();
+    
+        var form = $(this);
+        var exameId = form.find('#exameId').val();
+    
+        $.ajax({
+          type: 'GET',
+          url: '/exames/' + exameId + '/relatorio',
+          success: function(response) {
+            var respostas = response.respostas;
+    
+            // Process the report data as needed
+            console.log(respostas);
+    
+            // Reset the form
+            form[0].reset();
+          },
+          error: function(xhr, textStatus, error) {
+            var errorMessage = xhr.responseJSON.error;
+            alert(errorMessage);
+          }
+        });
+      });
+    });
+
+    //Close exam form
+
+    $(document).ready(function() {
+      $('#closeExamForm').submit(function(event) {
+        event.preventDefault();
+    
+        var form = $(this);
+        var exameId = form.find('#exameId').val();
+    
+        $.ajax({
+          type: 'POST',
+          url: '/exames/' + exameId + '/close',
+          success: function(response) {
+            alert(response.message);
+            form[0].reset();
+          },
+          error: function(xhr, textStatus, error) {
+            var errorMessage = xhr.responseJSON.error;
+            alert(errorMessage);
+          }
+        });
+      });
+    });
+    
+    
+    
+  </script>
+  </body>
+  </html>
+  
+  

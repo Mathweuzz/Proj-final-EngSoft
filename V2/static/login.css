@@ -1,0 +1,101 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-image: linear-gradient(90deg, black, rgb(41, 41, 231));
+}
+
+h1 {
+  font-size: 24px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-top: 2px solid rgb(227, 217, 217);
+  padding: 20px;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="password"] {
+  margin-bottom: 10px;
+  width: 200px;
+  border: 1px solid black;
+  height: 30px;
+  border-radius: 1rem;
+  padding: 12px 20px;
+  box-sizing: border-box;
+}
+
+input[type="submit"] {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 2rem;
+}
+
+input[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  width: 300px;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.container h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container label {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.container input[type="text"],
+.container input[type="password"] {
+  padding: 5px;
+  margin-bottom: 10px;
+  width: 200px;
+}
+
+.container input[type="submit"] {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.container input[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+.container h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}

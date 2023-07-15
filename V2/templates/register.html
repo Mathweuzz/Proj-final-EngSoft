@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}">
+</head>
+<body>
+    <h2>Cadastro</h2>
+    
+    <form action="/register" method="POST">
+        <label for="name">Nome:</label>
+        <input type="text" id="name" name="name" required><br>
+    
+        <label for="registration">Matrícula:</label>
+        <input type="text" id="registration" name="registration" required><br>
+    
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="password" required><br>
+        
+        <label for="confirm_password">Confirmar Senha:</label>
+        <input type="password" id="confirm_password" name="confirm_password" required><br>
+    
+        <label for="role">Função:</label>
+        <select id="role" name="role" required>
+            <option value="student">Aluno</option>
+            <option value="teacher">Professor</option>
+        </select><br>
+    
+        <!-- Exibição das mensagens flash -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for message in messages %}
+                        <li class="flash-message {{ message[1] }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    
+        <button type="submit">Registrar</button>
+    </form>
+    
+    <a href="/login">Já possui uma conta? Faça login aqui</a>
+</body>
+</html>
