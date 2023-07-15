@@ -1,58 +1,7 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, request, jsonify, session, render_template
-import secrets
-
-secret_key = secrets.token_hex(16)
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.secret_key = secret_key
-
-db = SQLAlchemy(app)
+from flask import request, jsonify, session, render_template
+from models import db, User, Question, Answer, Exam
 
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), unique=True, nullable=False)
-    email = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(50), nullable=False)
-    profile = db.Column(db.String(50), nullable=False)
-
-
-class Question(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    question = db.Column(db.String(500), nullable=False)
-    answer = db.Column(db.String(500), nullable=False)
-
-
-class Answer(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    exame_id = db.Column(db.Integer, db.ForeignKey('exam.id'), nullable=False)
-    questao_id = db.Column(db.Integer, db.ForeignKey(
-        'question.id'), nullable=False)
-    resposta = db.Column(db.String(500), nullable=False)
-
-    exam = db.relationship(
-        'Exam', backref=db.backref('answers', lazy='dynamic'))
-    question = db.relationship('Question')
-
-
-class Exam(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.String(50), nullable=False, default='aberto')
-    answered = db.Column(db.Boolean, nullable=False)
-    questions = db.relationship(
-        'Question', secondary='exam_question', backref=db.backref('exams', lazy='dynamic'))
-
-
-exam_question = db.Table('exam_question',
-                         db.Column('exam_id', db.Integer, db.ForeignKey(
-                             'exam.id'), primary_key=True),
-                         db.Column('question_id', db.Integer, db.ForeignKey(
-                             'question.id'), primary_key=True)
-                         )
-
-
-@app.before_first_request
 def seed_data():
     db.drop_all()
     db.create_all()
@@ -106,12 +55,10 @@ def autenticado():
     return False
 
 
-@app.route('/')
 def index():
     return render_template('index.html')
 
 
-@app.route('/registro', methods=['POST'])
 def registro():
     data = request.get_json()
     usuario = User.query.filter_by(username=data['usuario']).first()
@@ -124,7 +71,6 @@ def registro():
     return jsonify({"message": "Usuário registrado com sucesso"})
 
 
-@app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     usuario = User.query.filter_by(username=data['usuario']).first()
@@ -134,7 +80,6 @@ def login():
     return jsonify({"error": "Usuário ou senha inválidos"})
 
 
-@app.route('/exames', methods=['POST'])
 def create_exam():
     if 'usuario_id' not in session:
         return jsonify({"error": "Acesso não autorizado"})
@@ -159,7 +104,6 @@ def create_exam():
     return jsonify({"message": "Exame criado com sucesso"}), 201
 
 
-@app.route('/exames/<int:exame_id>/responder', methods=['POST'])
 def responder_exame(exame_id):
     if 'usuario_id' not in session:
         return jsonify({"error": "Acesso não autorizado"})
@@ -187,7 +131,6 @@ def responder_exame(exame_id):
     return jsonify({"error": "Exame não encontrado ou não está aberto para resposta"})
 
 
-@app.route('/exames/<int:exame_id>/relatorio', methods=['GET'])
 def relatorio_exame(exame_id):
     if not autenticado():
         return jsonify({"error": "Acesso não autorizado"})
@@ -220,7 +163,6 @@ def relatorio_exame(exame_id):
     return jsonify({"respostas": respostas})
 
 
-@app.route('/questions', methods=['POST'])
 def create_question():
     request_data = request.get_json()
     question_text = request_data.get('question')
@@ -235,7 +177,6 @@ def create_question():
     return jsonify({'message': 'Question created successfully'}), 201
 
 
-@app.route('/exames/<int:exame_id>/close', methods=['POST'])
 def close_exam(exame_id):
     if not autenticado():
         return jsonify({"error": "Acesso não autorizado"})
@@ -249,7 +190,3 @@ def close_exam(exame_id):
     db.session.commit()
 
     return jsonify({"message": "Exame encerrado com sucesso"})
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
