@@ -198,3 +198,55 @@ def close_exam(exame_id):
     db.session.commit()
 
     return jsonify({"message": "Exame encerrado com sucesso"})
+
+def visualizar_resultados():
+    if not autenticado():
+        return jsonify({"error": "Acesso não autorizado"})
+
+    exame_id = request.args.get('exame_id')
+    turma = request.args.get('turma')
+    disciplina = request.args.get('disciplina')
+    periodo = request.args.get('periodo')
+
+    if not exame_id and not turma and not disciplina and not periodo:
+        return jsonify({"error": "Filtros não especificados"})
+
+    if exame_id:
+        exame = Exam.query.get(exame_id)
+        if not exame:
+            return jsonify({"error": "Exame não encontrado"})
+
+        if not exame.status == 'encerrado':
+            return jsonify({"error": "Exame ainda não encerrado"})
+
+        alunos = User.query.filter_by(profile='estudante').all()
+        resultados = []
+        for aluno in alunos:
+            resposta = Answer.query.filter_by(
+                exame_id=exame_id, user_id=aluno.id).first()
+            if resposta:
+                resultados.append({
+                    "aluno": aluno.username,
+                    "pontuacao": resposta.pontuacao
+                })
+
+        return jsonify({"resultados": resultados})
+
+    alunos = User.query.filter_by(profile='estudante').all()
+    resultados = []
+    for aluno in alunos:
+        exames_respondidos = Exam.query.filter(Exam.id == Answer.exame_id, Answer.user_id == aluno.id, Exam.status == 'encerrado')
+        if turma:
+            exames_respondidos = exames_respondidos.filter_by(turma=turma)
+        if disciplina:
+            exames_respondidos = exames_respondidos.filter_by(disciplina=disciplina)
+        if periodo:
+            exames_respondidos = exames_respondidos.filter_by(periodo=periodo)
+
+        pontuacao_total = sum(exame.pontuacao for exame in exames_respondidos)
+        resultados.append({
+            "aluno": aluno.username,
+            "pontuacao_total": pontuacao_total
+        })
+
+    return jsonify({"resultados": resultados})

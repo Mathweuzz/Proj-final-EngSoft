@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from controllers import seed_data, registro, login, create_exam, responder_exame, relatorio_exame, create_question, close_exam
+from controllers import seed_data, registro, login, create_exam, responder_exame, relatorio_exame, create_question, close_exam, visualizar_resultados
 import secrets
 
 secret_key = secrets.token_hex(16)
@@ -52,6 +52,9 @@ def create_question_route():
 def close_exam_route(exame_id):
     return close_exam(exame_id)
 
+@app.route('visualizar_resultados')
+def visualizar_resultados_route():
+    return visualizar_resultados()
 
 if __name__ == '__main__':
     app.run(debug=True)
