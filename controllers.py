@@ -200,6 +200,34 @@ def close_exam(exame_id):
 
     return jsonify({"message": "Exame encerrado com sucesso"})
 
+def avaliar_respostas(exame_id):
+    if not autenticado():
+        return jsonify({"error": "Acesso não autorizado"})
+
+    exame = Exam.query.get(exame_id)
+
+    if not exame:
+        return jsonify({"error": "Exame não encontrado"})
+
+    if exame.status != 'encerrado':
+        return jsonify({"error": "Exame não está encerrado"})
+
+    respostas_alunos = Answer.query.filter_by(exame_id=exame_id).all()
+    pontuacao_total = 0
+
+    for resposta in respostas_alunos:
+        questao = Question.query.get(resposta.questao_id)
+        if questao and resposta.resposta == questao.answer:
+            # Atualizar pontuação da resposta correta
+            resposta.pontuacao = questao.score
+            pontuacao_total += questao.score
+
+    exame.answered = True
+    db.session.commit()
+
+    return jsonify({"message": "Respostas avaliadas com sucesso", "pontuacao_total": pontuacao_total})
+
+
 
 def visualizar_resultados():
     if not autenticado():
