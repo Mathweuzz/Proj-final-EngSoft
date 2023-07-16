@@ -96,7 +96,8 @@ def create_exam():
     if not questions or not isinstance(questions, list):
         return jsonify({"error": "Questões inválidas"})
 
-    new_exam = Exam(title=title, description=description, total_score=total_score, answered=False)
+    new_exam = Exam(title=title, description=description,
+                    total_score=total_score, answered=False)
     db.session.add(new_exam)
 
     for question_data in questions:
@@ -199,6 +200,7 @@ def close_exam(exame_id):
 
     return jsonify({"message": "Exame encerrado com sucesso"})
 
+
 def visualizar_resultados():
     if not autenticado():
         return jsonify({"error": "Acesso não autorizado"})
@@ -235,11 +237,13 @@ def visualizar_resultados():
     alunos = User.query.filter_by(profile='estudante').all()
     resultados = []
     for aluno in alunos:
-        exames_respondidos = Exam.query.filter(Exam.id == Answer.exame_id, Answer.user_id == aluno.id, Exam.status == 'encerrado')
+        exames_respondidos = Exam.query.filter(
+            Exam.id == Answer.exame_id, Answer.user_id == aluno.id, Exam.status == 'encerrado')
         if turma:
             exames_respondidos = exames_respondidos.filter_by(turma=turma)
         if disciplina:
-            exames_respondidos = exames_respondidos.filter_by(disciplina=disciplina)
+            exames_respondidos = exames_respondidos.filter_by(
+                disciplina=disciplina)
         if periodo:
             exames_respondidos = exames_respondidos.filter_by(periodo=periodo)
 
