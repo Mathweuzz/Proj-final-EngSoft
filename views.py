@@ -57,6 +57,9 @@ def close_exam_route(exame_id):
 def visualizar_resultados_route():
     return visualizar_resultados()
 
+@app.route('/exames/<int:exame_id>/avaliar', methods=['POST'])
+def evaluate_exam_route(exame_id):
+    return avaliar_respostas(exame_id)
 
 if __name__ == '__main__':
     app.run(debug=True)
