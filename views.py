@@ -1,5 +1,6 @@
 from flask import Flask, render_template
-from controllers import seed_data, registro, login, create_exam, responder_exame, relatorio_exame, create_question, close_exam, visualizar_resultados, avaliar_respostas, avaliar_exames
+from controllers import seed_data, registro, login, create_exam, responder_exame, relatorio_exame, create_question, close_exam, visualizar_resultados, avaliar_respostas
+
 import secrets
 
 secret_key = secrets.token_hex(16)
@@ -15,7 +16,7 @@ def create_tables():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', css_file='styles.css')
 
 
 @app.route('/registro', methods=['POST'])
@@ -57,13 +58,11 @@ def close_exam_route(exame_id):
 def visualizar_resultados_route():
     return visualizar_resultados()
 
+
 @app.route('/exames/<int:exame_id>/avaliar', methods=['POST'])
 def evaluate_exam_route(exame_id):
     return avaliar_respostas(exame_id)
 
-@app.route('/avaliar_exame/<int:exame_id>', methods=['POST'])
-def avaliar_exames_route(exame_id):
-    avaliar_exames(exame_id)
 
 if __name__ == '__main__':
     app.run(debug=True)

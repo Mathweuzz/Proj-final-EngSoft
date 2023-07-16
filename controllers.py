@@ -48,27 +48,32 @@ def seed_data():
 
 
 def autenticado():
-    # Example logic to check if the user is authenticated
-    # You should replace this with your own authentication logic
     if 'usuario_id' in session:
         return True
     return False
 
 
-def index():
-    return render_template('index.html')
-
-
 def registro():
-    data = request.get_json()
-    usuario = User.query.filter_by(username=data['usuario']).first()
-    if usuario:
-        return jsonify({"error": "Usuário já existe"})
-    novo_usuario = User(username=data['usuario'], email=data['email'],
-                        password=data['senha'], profile=data['perfil'])
-    db.session.add(novo_usuario)
-    db.session.commit()
-    return jsonify({"message": "Usuário registrado com sucesso"})
+    if request.headers.get('Content-Type') == 'application/json':
+        data = request.get_json()
+        usuario = User.query.filter_by(username=data['usuario']).first()
+        if usuario:
+            return jsonify({"error": "Usuário já existe"})
+        novo_usuario = User(username=data['usuario'], email=data['email'],
+                            password=data['senha'], profile=data['perfil'])
+        db.session.add(novo_usuario)
+        db.session.commit()
+        return jsonify({"message": "Usuário registrado com sucesso"})
+    else:
+        usuario = User.query.filter_by(
+            username=request.form['usuario']).first()
+        if usuario:
+            return jsonify({"error": "Usuário já existe"})
+        novo_usuario = User(username=request.form['usuario'], email=request.form['email'],
+                            password=request.form['senha'], profile=request.form['perfil'])
+        db.session.add(novo_usuario)
+        db.session.commit()
+        return render_template('index.html', message="Usuário registrado com sucesso")
 
 
 def login():
@@ -200,6 +205,7 @@ def close_exam(exame_id):
 
     return jsonify({"message": "Exame encerrado com sucesso"})
 
+
 def avaliar_respostas(exame_id):
     if not autenticado():
         return jsonify({"error": "Acesso não autorizado"})
@@ -226,7 +232,6 @@ def avaliar_respostas(exame_id):
     db.session.commit()
 
     return jsonify({"message": "Respostas avaliadas com sucesso", "pontuacao_total": pontuacao_total})
-
 
 
 def visualizar_resultados():
