@@ -52,9 +52,11 @@ def create_question_route():
 def close_exam_route(exame_id):
     return close_exam(exame_id)
 
-@app.route('visualizar_resultados')
+
+@app.route('/visualizar_resultados')
 def visualizar_resultados_route():
     return visualizar_resultados()
+
 
 if __name__ == '__main__':
     app.run(debug=True)
