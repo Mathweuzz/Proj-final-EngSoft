@@ -17,22 +17,55 @@ Mateus Gomes de Araújo - 202014440
 Yan Tavares de Oliveira - 202014323
 
 
-Planejamento inicial
-Para essa segunda entrega, novamente nos separamos e dividimos as tarefas para concluir um MVP do projeto. Para isso deveriamos cumprir os requisitos mínimos e assim possibilitar a aplicação de exames. Logo, dividimos para conquistar, um ficaria com um recurso e o relatório, e o restante dividiria os recursos entre si por nível de complexidade. No final de semana nos reuniriamos e testariamos algumas requisições para validar a utilização do sistema.
+Relatório da Entrega 2
 
+O objetivo da Entrega 2 foi realizar as tarefas planejadas de acordo com o documento "Doc. de Especificação". Durante a interação, foram definidos os seguintes itens:
 
-Concluído
-Dado o que planejamos, desenvolvemos os requisitos mínimos e as requisições do sistema. Para os testes, também usamos as Estórias de Usuários que determinamos na última entrega. Até o momento, nosso projeto atende parcialmente algumas requisições da lista de estórias de usuários Nº 2, que estipula resquisições de gerenciamento de resultados dos alunos. 
-Tendo como base o documento de especificação do trabalho, concluímos com sucesso o conjunto contendo 5 requisitos que foram determinados para a entrega 2.
+O que foi planejado no início da interação:
+1. Implementar o sistema de autenticação de usuários.
+2. Desenvolver a funcionalidade de criação de questões.
+3. Adicionar a capacidade de criação de exames com base em questões selecionadas.
+4. Implementar a funcionalidade de resposta a exames.
+5. Adicionar a opção de gerar relatórios com base nas respostas aos exames.
+6. Implementar o encerramento de exames.
 
+O que foi concluído:
+1. Issue #1: Implementação do sistema de autenticação de usuários.
+2. Issue #2: Desenvolvimento da funcionalidade de criação de questões.
+3. Issue #3: Adição da capacidade de criação de exames com base em questões selecionadas.
+4. Issue #4: Implementação da funcionalidade de resposta a exames.
+5. Issue #5: Adição da opção de gerar relatórios com base nas respostas aos exames.
+6. Issue #6: Implementação do encerramento de exames.
 
-Estado atual do projeto
-Até o momento concluímos completamente a entrega 1 do projeto e entrega 2. Ao todo foram 5 requisitos, um conjunto com 4 listas de estórias de usuário e a estrutura base do sistema.
+O que voltou para o backlog:
+N/A
 
+Estado atual do projeto:
+Até o momento, os seguintes requisitos já foram atendidos:
+- Sistema de autenticação de usuários implementado.
+- Funcionalidade de criação de questões desenvolvida.
+- Capacidade de criar exames com base em questões selecionadas adicionada.
+- Funcionalidade de resposta a exames implementada.
+- Opção de gerar relatórios com base nas respostas aos exames adicionada.
+- Encerramento de exames foi implementado.
 
-Próximos passos
-Para a próxima interação, iniciamos desde antes da entrega 2, a elaboração do nosso planejamento para entrega do sistema de exames em sua versão final, contendo o maior número de funcionalidades e requisitos. Não será uma etapa fácil tendo em vista o peso e a pressão do final do semestre como um todo, porém estamos confiantes e motivados a concluir devidamente o desenvolvimento desse sistema.
+O que será desenvolvido na próxima iteração:
+1. Melhorias na interface do usuário para uma experiência mais intuitiva.
+2. Implementação de notificações para usuários sobre ações importantes.
+3. Adição de testes automatizados para garantir a qualidade do código.
+4. Melhorias de desempenho e otimização da aplicação.
+5. Refatoração do código para melhor organização e legibilidade.
 
+Sprint Review:
+O que foi bem =)
+- O sistema de autenticação de usuários foi implementado de forma segura e funcional.
+- As funcionalidades de criação de questões e exames foram concluídas conforme o planejado.
+- A resposta a exames e geração de relatórios estão funcionando corretamente.
 
-Sprint Review
-Algumas coisas não saíram como planejado, o que é totalmente normal, mas concluímos a segunda entrega e estamos contentes com os resultados. Para a conclusão da segunda entrega tivemos bem mais desafios do que na primeira, o que já era de se esperar, já imaginávamos que a dificuldade aumentaria a cada nova entrega. Estamos firmes e focados na conclusão do projeto.
+O que foi mal =(
+- Houve um atraso na implementação do encerramento de exames, causando um pequeno atraso na entrega.
+
+Pontos a melhorar:
+- Melhorar a comunicação entre a equipe para evitar atrasos e garantir um fluxo de trabalho mais eficiente.
+- Aumentar a cobertura de testes automatizados para garantir a estabilidade e qualidade do código.
+- Realizar uma revisão mais detalhada antes da entrega para evitar problemas de última hora.
