@@ -194,7 +194,7 @@ def close_exam(exame_id):
     if not exame:
         return jsonify({"error": "Exame não encontrado"})
 
-    exame.status = 'encerrado'
+    exame.status = "encerrado"
     db.session.commit()
 
     return jsonify({"message": "Exame encerrado com sucesso"})
