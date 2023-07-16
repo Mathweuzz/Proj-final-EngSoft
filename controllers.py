@@ -85,19 +85,27 @@ def create_exam():
         return jsonify({"error": "Acesso não autorizado"})
 
     data = request.get_json()
+    title = data.get('title')
+    description = data.get('description')
     questions = data.get('questions')
+    total_score = data.get('total_score')
+
+    if not title or not description or not total_score:
+        return jsonify({"error": "Dados incompletos"})
 
     if not questions or not isinstance(questions, list):
         return jsonify({"error": "Questões inválidas"})
 
-    new_exam = Exam(answered=False)
+    new_exam = Exam(title=title, description=description, total_score=total_score, answered=False)
     db.session.add(new_exam)
 
     for question_data in questions:
         question_id = question_data.get('id')
+        question_score = question_data.get('score')
         question = Question.query.get(int(question_id))
         if question:
             new_exam.questions.append(question)
+            question.score = question_score
 
     db.session.commit()
 
