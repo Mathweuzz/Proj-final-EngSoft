@@ -8,8 +8,6 @@
 <body>
 
     <h2>Answer Question</h2>
-    <!-- Answer form fields -->
-
     <form id="responderExameForm">
       <label for="exameId">Exame ID:</label>
       <input type="text" id="exameId" name="exameId" required>
@@ -20,6 +18,75 @@
       <br><br>
       <button type="submit">Responder Exame</button>
     </form>
+
+    <h2>Generate Report</h2>
+    <form id="reportForm">
+      <label for="exameId">Exam ID:</label>
+      <input type="text" id="exameId" name="exameId" required>
+      <br><br>
+      <button type="submit">Generate Report</button>
+    </form>
+
+  <script>
+    // Answer form submission
+    $(document).ready(function() {
+      $('#responderExameForm').submit(function(event) {
+        event.preventDefault();
     
+        var form = $(this);
+        var exameId = form.find('#exameId').val();
+        var respostas = form.find('#respostas').val();
+    
+        var jsonData = {
+          respostas: JSON.parse(respostas)
+        };
+    
+        $.ajax({
+          type: 'POST',
+          url: '/exames/' + exameId + '/responder',
+          data: JSON.stringify(jsonData),
+          contentType: 'application/json',
+          success: function(response) {
+            alert(response.message);
+            form[0].reset();
+          },
+          error: function(xhr, textStatus, error) {
+            var errorMessage = xhr.responseJSON.error;
+            alert(errorMessage);
+          }
+        });
+      });
+    });
+    
+    
+    // Report form submission
+    $(document).ready(function() {
+      $('#reportForm').submit(function(event) {
+        event.preventDefault();
+    
+        var form = $(this);
+        var exameId = form.find('#exameId').val();
+    
+        $.ajax({
+          type: 'GET',
+          url: '/exames/' + exameId + '/relatorio',
+          success: function(response) {
+            var respostas = response.respostas;
+    
+            // Process the report data as needed
+            console.log(respostas);
+    
+            // Reset the form
+            form[0].reset();
+          },
+          error: function(xhr, textStatus, error) {
+            var errorMessage = xhr.responseJSON.error;
+            alert(errorMessage);
+          }
+        });
+      });
+    });
+  </script>
+      
 </body>
 </html>
