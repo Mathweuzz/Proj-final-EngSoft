@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from controllers import seed_data, registro, login, create_exam, responder_exame, relatorio_exame, create_question, close_exam, visualizar_resultados, avaliar_respostas
 
 import secrets
@@ -19,14 +19,22 @@ def index():
     return render_template('index.html', css_file='styles.css')
 
 
-@app.route('/registro', methods=['POST'])
-def register():
-    return registro()
+@app.route('/registro', methods=['GET', 'POST'])
+def register_route():
+    if request.method == 'POST':
+        return registro()
+    else:
+        error = None
+        return render_template('registro.html', error=error, css_file='styles.css')
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'GET'])
 def login_route():
-    return login()
+    if request.method == 'POST':
+        return login()
+    else:
+        error = None
+        return render_template('login.html', error=error, css_file='styles.css')
 
 
 @app.route('/exames', methods=['POST'])

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Web App</title>
+    <link rel="stylesheet" href="{{url_for('static', filename=css_file)}}">
+</head>
+<body>
+    <h1>Welcome to My Web App</h1>
+
+
+    <div class="container">
+
+        <form action="{{ url_for('register_route') }}" method="POST" class="form">
+            {% if msg %}
+            <p>{{ msg }}</p>
+            {% endif %}
+            <p class="title">Register </p>
+            <p class="message">Signup now and get full access to our app. </p>
+         
+            <label>
+                <input required="" placeholder="" type="text" name="username" class="input">
+                <span>User</span>
+            </label>
+         
+            <label>
+                <input required="" placeholder="" type="email" name="email" class="input">
+                <span>Email</span>
+            </label> 
+            
+            <label>
+                <input required="" placeholder="" type="password" name="password" class="input">
+                <span>Password</span>
+            </label>
+            <label>
+                <input required="" placeholder="" type="text" name="role" class="input">
+                <span> Role </span>
+            </label>
+            <button class="submit">Submit</button>
+            <p class="signin">Already have an acount ? <a href="login.html">Sign-in</a> </p>
+        </form>
+    </div>
+    
+</body>
+</html>

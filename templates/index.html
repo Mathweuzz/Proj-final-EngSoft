@@ -1,31 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Web App</title>
-    <link rel="stylesheet" href="{{url_for('static', filename=css_file)}}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hey!!</title>
 </head>
 <body>
-    <h1>Welcome to My Web App</h1>
-
-    <h2>Registration</h2>
-    {% if message %}
-        <p>{{ message }}</p>
-    {% endif %}
-    
-    <form method="POST" action="/registro">
-        <label for="usuario">Username:</label>
-        <input type="text" id="usuario" name="usuario" required><br>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br>
-
-        <label for="senha">Password:</label>
-        <input type="password" id="senha" name="senha" required><br>
-
-        <label for="perfil">Profile:</label>
-        <input type="text" id="perfil" name="perfil" required><br>
-
-        <input type="submit" value="Register">
+    <h1>Welcome to my website!</h1>
+    <p>Please choose an option:</p>
+    <form method="GET" action="{{ url_for('register_route') }}">
+        <button type="submit">Registro</button>
+    </form>
+    <form method="GET" action="{{ url_for('login_route') }}">
+        <button type="submit">Login</button>
     </form>
 </body>
 </html>

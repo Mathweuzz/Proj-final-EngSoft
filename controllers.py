@@ -65,24 +65,43 @@ def registro():
         db.session.commit()
         return jsonify({"message": "Usuário registrado com sucesso"})
     else:
-        usuario = User.query.filter_by(
-            username=request.form['usuario']).first()
-        if usuario:
-            return jsonify({"error": "Usuário já existe"})
-        novo_usuario = User(username=request.form['usuario'], email=request.form['email'],
-                            password=request.form['senha'], profile=request.form['perfil'])
-        db.session.add(novo_usuario)
-        db.session.commit()
-        return render_template('index.html', message="Usuário registrado com sucesso")
+        try:
+            # Handle the form submission and create a new user
+            username = request.form['username']
+            email = request.form['email']
+            password = request.form['password']
+            role = request.form['role']
+
+            # Create a new user in the database
+            new_user = User(username=username, email=email,
+                            password=password, profile=role)
+            if (new_user):
+                error = "Usuário já existe, gostaria de logar?"
+                return render_template('registro.html', msg=error, css_file='styles.css')
+
+            db.session.add(new_user)
+            db.session.commit()
+
+            # Return a response or redirect to another page
+            success = "Usuário registrado com sucesso"
+            return render_template('registro.html', msg=success, css_file='styles.css')
+
+        except:
+            error = "Erro ao registrar usuário"
+            return render_template('registro.html', msg=error, css_file='styles.css')
 
 
 def login():
-    data = request.get_json()
-    usuario = User.query.filter_by(username=data['usuario']).first()
-    if usuario and usuario.password == data['senha']:
-        session['usuario_id'] = usuario.id
-        return jsonify({"perfil": usuario.profile})
-    return jsonify({"error": "Usuário ou senha inválidos"})
+    if request.method == 'POST':
+        data = request.form
+        usuario = User.query.filter_by(username=data['usuario']).first()
+        if usuario and usuario.password == data['senha']:
+            session['usuario_id'] = usuario.id
+            return jsonify({"perfil": usuario.profile})
+        error = "Usuário ou senha inválidos"
+    else:
+        error = None
+    return render_template('login.html', error=error)
 
 
 def create_exam():
@@ -288,6 +307,7 @@ def visualizar_resultados():
 
     return jsonify({"resultados": resultados})
 
+
 def avaliar_exame(exame_id):
     if not autenticado():
         return jsonify({"error": "Acesso não autorizado"})
@@ -314,7 +334,8 @@ def avaliar_exame(exame_id):
         for resposta in respostas_aluno:
             if resposta.questao_id in gabarito:
                 if resposta.resposta == gabarito[resposta.questao_id]:
-                    pontuacao_aluno += Question.query.get(resposta.questao_id).score
+                    pontuacao_aluno += Question.query.get(
+                        resposta.questao_id).score
 
         resposta_exame = Answer.query.filter_by(
             exame_id=exame_id, user_id=aluno.id).first()

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+  </head>
+  <body>
+    <h1>Login</h1>
+    {% if error %}
+      <p>{{ error }}</p>
+    {% endif %}
+    <form method="POST" action="{{ url_for('login_route') }}">
+      <label for="usuario">Usuário:</label>
+      <input type="text" name="usuario" id="usuario" required>
+      <br>
+      <label for="senha">Senha:</label>
+      <input type="password" name="senha" id="senha" required>
+      <br>
+      <input type="submit" value="Entrar">
+    </form>
+  </body>
+</html>
