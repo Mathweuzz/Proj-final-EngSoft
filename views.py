@@ -43,7 +43,7 @@ def create_exam_route():
 
 
 @app.route('/exames/<int:exame_id>/responder', methods=['POST'])
-def answer_exam_route(exame_id):
+def responder_exame_route(exame_id):
     return responder_exame(exame_id)
 
 

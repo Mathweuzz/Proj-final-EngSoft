@@ -99,7 +99,8 @@ def login():
         usuario = User.query.filter_by(username=data['usuario']).first()
         if usuario and usuario.password == data['senha']:
             session['usuario_id'] = usuario.id
-            return jsonify({"perfil": usuario.profile})
+            if usuario.profile == 'professor':
+                return render_template('dashboard.html', css_file='styles.css')
         error = "Usuário ou senha inválidos"
     else:
         error = None
@@ -111,28 +112,27 @@ def create_exam():
         return jsonify({"error": "Acesso não autorizado"})
 
     data = request.get_json()
-    title = data.get('title')
-    description = data.get('description')
+    # title = data.get('title')
+    # description = data.get('description')
     questions = data.get('questions')
-    total_score = data.get('total_score')
+    # total_score = data.get('total_score')
 
-    if not title or not description or not total_score:
-        return jsonify({"error": "Dados incompletos"})
+    # if not title or not description or not total_score:
+    #     return jsonify({"error": "Dados incompletos"})
 
     if not questions or not isinstance(questions, list):
         return jsonify({"error": "Questões inválidas"})
 
-    new_exam = Exam(title=title, description=description,
-                    total_score=total_score, answered=False)
+    new_exam = Exam(status="aberto", answered=False)
     db.session.add(new_exam)
 
     for question_data in questions:
         question_id = question_data.get('id')
-        question_score = question_data.get('score')
+        # question_score = question_data.get('score')
         question = Question.query.get(int(question_id))
         if question:
             new_exam.questions.append(question)
-            question.score = question_score
+            # question.score = question_score
 
     db.session.commit()
 
