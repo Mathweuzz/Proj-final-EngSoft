@@ -1,56 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Professor Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
 <body>
-    <h1>Professor Dashboard</h1>
 
-    <h2>Create Exam</h2>
-    <form action="{{ url_for('create_exam_route') }}" method="post">
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required>
-        <label for="description">Description:</label>
-        <input type="text" id="description" name="description" required>
-        <label for="total_score">Total Score:</label>
-        <input type="number" id="total_score" name="total_score" required>
-        <input type="submit" value="Create Exam">
-    </form>
+    <h2>Answer Question</h2>
+    <!-- Answer form fields -->
 
-    <h2>Create Question</h2>
-    <form action="{{ url_for('create_question_route') }}" method="post">
-        <label for="question">Question:</label>
-        <input type="text" id="question" name="question" required>
-        <label for="answer">Answer:</label>
-        <input type="text" id="answer" name="answer" required>
-        <input type="submit" value="Create Question">
+    <form id="responderExameForm">
+      <label for="exameId">Exame ID:</label>
+      <input type="text" id="exameId" name="exameId" required>
+      <br><br>
+      <label for="respostas">Respostas:</label>
+      <br>
+      <textarea id="respostas" name="respostas" rows="5" required></textarea>
+      <br><br>
+      <button type="submit">Responder Exame</button>
     </form>
-
-    <h2>Close Exam</h2>
-    <form action="{{ url_for('close_exam_route') }}" method="post">
-        <label for="exame_id">Exam ID:</label>
-        <input type="number" id="exame_id" name="exame_id" required>
-        <input type="submit" value="Close Exam">
-    </form>
-
-    <h2>View Results</h2>
-    <form action="{{ url_for('visualizar_resultados_route') }}" method="get">
-        <label for="exame_id">Exam ID:</label>
-        <input type="number" id="exame_id" name="exame_id">
-        <label for="turma">Class:</label>
-        <input type="text" id="turma" name="turma">
-        <label for="disciplina">Subject:</label>
-        <input type="text" id="disciplina" name="disciplina">
-        <label for="periodo">Period:</label>
-        <input type="text" id="periodo" name="periodo">
-        <input type="submit" value="View Results">
-    </form>
-
-    <h2>Evaluate Exam</h2>
-    <form action="{{ url_for('evaluate_exam_route', exame_id=exame_id) }}" method="post">
-        <label for="exame_id">Exam ID:</label>
-        <input type="number" id="exame_id" name="exame_id" required>
-        <input type="submit" value="Evaluate Exam">
-    </form>
+    
 </body>
 </html>
