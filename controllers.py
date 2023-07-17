@@ -72,13 +72,15 @@ def registro():
             password = request.form['password']
             role = request.form['role']
 
-            # Create a new user in the database
-            new_user = User(username=username, email=email,
-                            password=password, profile=role)
-            if (new_user):
+            # Check if the user already exists in the database
+            usuario = User.query.filter_by(username=username).first()
+            if usuario:
                 error = "Usuário já existe, gostaria de logar?"
                 return render_template('registro.html', msg=error, css_file='styles.css')
 
+            # Create a new user in the database
+            new_user = User(username=username, email=email,
+                            password=password, profile=role)
             db.session.add(new_user)
             db.session.commit()
 

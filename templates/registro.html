@@ -32,11 +32,15 @@
                 <span>Password</span>
             </label>
             <label>
-                <input required="" placeholder="" type="text" name="role" class="input">
-                <span> Role </span>
+                <span>Função: </span>
+                <select name="role" required>
+                    <option value="">Select an option</option>
+                    <option value="professor">Professor</option>
+                    <option value="aluno">Aluno</option>
+                </select>
             </label>
             <button class="submit">Submit</button>
-            <p class="signin">Already have an acount ? <a href="login.html">Sign-in</a> </p>
+            <p class="signin">Already have an account? <a href="{{ url_for('login_route') }}">Login</a></p>
         </form>
     </div>
     
