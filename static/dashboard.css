@@ -1,0 +1,144 @@
+/* Estilo geral */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+  }
+  
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-gap: 20px;
+  }
+  
+  .grid-item {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    animation: slide-in 0.5s ease-in-out;
+  }
+  
+  @keyframes slide-in {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  h2 {
+    color: #666;
+    font-size: 18px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  form {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  label {
+    font-weight: bold;
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  select {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  input[type="submit"],
+  button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  input[type="submit"]:hover,
+  button:hover {
+    background-color: #555;
+  }
+  
+  .alert {
+    padding: 10px;
+    margin-bottom: 10px;
+    color: #fff;
+    border-radius: 4px;
+    animation: fade-in 0.3s ease-in-out;
+  }
+  
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  .success {
+    background-color: #4CAF50;
+  }
+  
+  .error {
+    background-color: #f44336;
+  }
+  
+  .select-question {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .add-question-button {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .create-exam-button {
+    display: flex;
+    justify-content: center;
+  }
+  
+  /* Alinhamento centralizado */
+  .text-center {
+    text-align: center;
+  }
+  
+  /* Layout responsivo para dispositivos móveis */
+  @media (max-width: 767px) {
+    .grid-container {
+      grid-template-columns: 1fr;
+    }
+  }
+  
