@@ -326,7 +326,7 @@ def avaliar_exame(exame_id):
         return jsonify({"error": "Exame não está encerrado"})
 
     resultados = []
-    for aluno in exame.students:
+    for aluno in User.query.filter_by(profile='estudante').all():
         pontuacao_total = 0
         for questao in exame.questions:
             resposta = Answer.query.filter_by(
