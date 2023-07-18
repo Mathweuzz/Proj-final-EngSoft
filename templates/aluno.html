@@ -1,15 +1,16 @@
-<!DOCTYPE html>
+=<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{{url_for('static', filename='aluno.css')}}">
 </head>
 <body>
 
+  <div class="container">
     <h2>Answer Question</h2>
     <!-- Answer form fields -->
-
     <form id="responderExameForm">
       <label for="exameId">Exame ID:</label>
       <input type="text" id="exameId" name="exameId" required>
@@ -20,7 +21,9 @@
       <br><br>
       <button type="submit">Responder Exame</button>
     </form>
+  </div>
 
+  <div class="container">
     <h2>Generate Report</h2>
     <form id="reportForm">
       <label for="exameId">Exam ID:</label>
@@ -28,9 +31,10 @@
       <br><br>
       <button type="submit">Generate Report</button>
     </form>
+  </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
     // Answer form submission
     $(document).ready(function() {
       $('#responderExameForm').submit(function(event) {
@@ -89,6 +93,5 @@
     });
   
   </script>
-      
 </body>
 </html>
