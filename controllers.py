@@ -15,7 +15,8 @@ def seed_data():
 
     questao1 = Question(
         question='Qual é a capital do Brasil?', answer='Brasília', score='30')
-    questao2 = Question(question='Quanto é meia dúzia?', answer='6', score='30')
+    questao2 = Question(question='Quanto é meia dúzia?',
+                        answer='6', score='30')
     db.session.add(questao1)
     db.session.add(questao2)
 
