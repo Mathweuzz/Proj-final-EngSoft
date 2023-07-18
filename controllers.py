@@ -149,9 +149,6 @@ def responder_exame(exame_id):
     if not exame:
         return jsonify({"error": "Exame não encontrado"})
 
-    if exame.answered:
-        return jsonify({"error": "Exame já respondido"})
-
     data = request.get_json()
     respostas = data.get('respostas')
 
