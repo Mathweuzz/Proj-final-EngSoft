@@ -146,26 +146,32 @@ def responder_exame(exame_id):
         return jsonify({"error": "Acesso não autorizado"})
 
     exame = Exam.query.get(exame_id)
-    if exame and exame.status == 'aberto' and not exame.answered:
-        data = request.get_json()
-        respostas = data.get('respostas')
+    if not exame:
+        return jsonify({"error": "Exame não encontrado"})
 
-        if not respostas:
-            return jsonify({"error": "Nenhuma resposta fornecida"})
+    if exame.answered:
+        return jsonify({"error": "Exame já respondido"})
 
-        for questao_id, resposta in respostas.items():
-            nova_resposta = Answer(
-                exame_id=exame_id,
-                questao_id=int(questao_id),
-                resposta=resposta
-            )
-            db.session.add(nova_resposta)
+    data = request.get_json()
+    respostas = data.get('respostas')
 
-        exame.answered = True
-        db.session.commit()
-        return jsonify({"message": "Exame respondido com sucesso"})
+    if not respostas:
+        return jsonify({"error": "Nenhuma resposta fornecida"})
 
-    return jsonify({"error": "Exame não encontrado ou não está aberto para resposta"})
+    user_id = session['usuario_id']  # Retrieve the user_id from the session
+
+    for questao_id, resposta in respostas.items():
+        nova_resposta = Answer(
+            exame_id=exame_id,
+            questao_id=int(questao_id),
+            resposta=resposta,
+            user_id=user_id  # Include the user_id in the nova_resposta object
+        )
+        db.session.add(nova_resposta)
+
+    exame.answered = True
+    db.session.commit()
+    return jsonify({"success": "Exame respondido com sucesso"})
 
 
 def relatorio_exame(exame_id):
