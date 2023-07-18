@@ -17,6 +17,7 @@ class Question(db.Model):
     answer = db.Column(db.String(500), nullable=False)
     score = db.Column(db.Integer, nullable=False)
 
+
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
