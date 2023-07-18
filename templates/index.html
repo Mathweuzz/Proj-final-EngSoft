@@ -1,18 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hey!!</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hey!!</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('https://source.unsplash.com/random/1920x1080') center/cover fixed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    form {
+      display: flex;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 0 10px;
+      font-size: 16px;
+    }
+  </style>
 </head>
+
 <body>
-    <h1>Welcome to my website!</h1>
-    <p>Please choose an option:</p>
-    <form method="GET" action="{{ url_for('register_route') }}">
-        <button type="submit">Registro</button>
-    </form>
-    <form method="GET" action="{{ url_for('login_route') }}">
-        <button type="submit">Login</button>
-    </form>
+  <h1>Welcome to my website!</h1>
+  <p>Please choose an option:</p>
+  <form method="GET" action="{{ url_for('register_route') }}">
+    <button type="submit">Registro</button>
+  </form>
+  <form method="GET" action="{{ url_for('login_route') }}">
+    <button type="submit">Login</button>
+  </form>
 </body>
+
 </html>
