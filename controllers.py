@@ -188,11 +188,16 @@ def relatorio_exame(exame_id):
         questao_respostas = Answer.query.filter_by(
             exame_id=exame_id, questao_id=question.id).all()
         for resposta in questao_respostas:
+            if resposta.resposta == question.answer:
+                score = question.score
+            else:
+                score = 0
             respostas.append({
                 "pergunta": question.question,
                 "resposta": resposta.resposta,
                 "correta": question.answer,
-                "usuario": resposta.user_id
+                "usuario": resposta.user_id,
+                "pontuacao": score
             })
 
     return jsonify({"respostas": respostas})
