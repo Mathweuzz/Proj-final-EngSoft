@@ -19,9 +19,9 @@ class Question(db.Model):
 
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     exame_id = db.Column(db.Integer, db.ForeignKey('exam.id'), nullable=False)
-    questao_id = db.Column(db.Integer, db.ForeignKey(
-        'question.id'), nullable=False)
+    questao_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)
     resposta = db.Column(db.String(500), nullable=False)
     pontuacao = db.Column(db.Integer, nullable=False, default=0)
 
