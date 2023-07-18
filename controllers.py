@@ -188,19 +188,14 @@ def relatorio_exame(exame_id):
 
     respostas = []
     for question in exame.questions:
-        resposta = Answer.query.filter_by(
-            exame_id=exame_id, questao_id=question.id).first()
-        if resposta:
+        questao_respostas = Answer.query.filter_by(
+            exame_id=exame_id, questao_id=question.id).all()
+        for resposta in questao_respostas:
             respostas.append({
                 "pergunta": question.question,
                 "resposta": resposta.resposta,
-                "correta": question.answer
-            })
-        else:
-            respostas.append({
-                "pergunta": question.question,
-                "resposta": None,
-                "correta": question.answer
+                "correta": question.answer,
+                "usuario": resposta.user_id
             })
 
     return jsonify({"respostas": respostas})
