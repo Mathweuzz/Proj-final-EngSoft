@@ -114,31 +114,31 @@ def create_exam():
         return jsonify({"error": "Acesso não autorizado"})
 
     data = request.get_json()
+    status = data.get('status')
     title = data.get('title')
     description = data.get('description')
     questions = data.get('questions')
     total_score = data.get('total_score')
+    turma = data.get('turma')
+    disciplina = data.get('disciplina')
+    periodo = data.get('periodo')
 
-    if not title or not description or not total_score:
+    if not status or not title or not description or not total_score or not turma or not disciplina or not periodo:
         return jsonify({"error": "Dados incompletos"})
 
     if not questions or not isinstance(questions, list):
         return jsonify({"error": "Questões inválidas"})
 
-    new_exam = Exam(status="aberto", answered=False)
+    new_exam = Exam(status=status, answered=False, title=title, description=description,
+                    total_score=total_score, turma=turma, disciplina=disciplina, periodo=periodo)
     db.session.add(new_exam)
 
     for question_data in questions:
         question_id = question_data.get('id')
-        question_score = question_data.get('score')
-        question = Question.query.get(int(question_id))
-        if question:
-            new_exam.questions.append(question)
-            question.score = question_score
+        # Add code to associate the question with the exam
 
     db.session.commit()
-
-    return jsonify({"message": "Exame criado com sucesso"}), 201
+    return jsonify({"success": "Exame criado com sucesso"})
 
 
 def responder_exame(exame_id):
@@ -146,26 +146,29 @@ def responder_exame(exame_id):
         return jsonify({"error": "Acesso não autorizado"})
 
     exame = Exam.query.get(exame_id)
-    if exame and exame.status == 'aberto' and not exame.answered:
-        data = request.get_json()
-        respostas = data.get('respostas')
+    if not exame:
+        return jsonify({"error": "Exame não encontrado"})
 
-        if not respostas:
-            return jsonify({"error": "Nenhuma resposta fornecida"})
+    data = request.get_json()
+    respostas = data.get('respostas')
 
-        for questao_id, resposta in respostas.items():
-            nova_resposta = Answer(
-                exame_id=exame_id,
-                questao_id=int(questao_id),
-                resposta=resposta
-            )
-            db.session.add(nova_resposta)
+    if not respostas:
+        return jsonify({"error": "Nenhuma resposta fornecida"})
 
-        exame.answered = True
-        db.session.commit()
-        return jsonify({"message": "Exame respondido com sucesso"})
+    user_id = session['usuario_id']  # Retrieve the user_id from the session
 
-    return jsonify({"error": "Exame não encontrado ou não está aberto para resposta"})
+    for questao_id, resposta in respostas.items():
+        nova_resposta = Answer(
+            exame_id=exame_id,
+            questao_id=int(questao_id),
+            resposta=resposta,
+            user_id=user_id  # Include the user_id in the nova_resposta object
+        )
+        db.session.add(nova_resposta)
+
+    exame.answered = True
+    db.session.commit()
+    return jsonify({"success": "Exame respondido com sucesso"})
 
 
 def relatorio_exame(exame_id):
@@ -182,19 +185,14 @@ def relatorio_exame(exame_id):
 
     respostas = []
     for question in exame.questions:
-        resposta = Answer.query.filter_by(
-            exame_id=exame_id, questao_id=question.id).first()
-        if resposta:
+        questao_respostas = Answer.query.filter_by(
+            exame_id=exame_id, questao_id=question.id).all()
+        for resposta in questao_respostas:
             respostas.append({
                 "pergunta": question.question,
                 "resposta": resposta.resposta,
-                "correta": question.answer
-            })
-        else:
-            respostas.append({
-                "pergunta": question.question,
-                "resposta": None,
-                "correta": question.answer
+                "correta": question.answer,
+                "usuario": resposta.user_id
             })
 
     return jsonify({"respostas": respostas})
@@ -208,7 +206,8 @@ def create_question():
     if not question_text or not answer_text:
         return jsonify({'error': 'Missing required fields'}), 400
 
-    new_question = Question(question=question_text, answer=answer_text, score=score_text)
+    new_question = Question(question=question_text,
+                            answer=answer_text, score=score_text)
     db.session.add(new_question)
     db.session.commit()
 
