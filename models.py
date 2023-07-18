@@ -43,6 +43,7 @@ class Exam(db.Model):
     disciplina = db.Column(db.String(100))
     periodo = db.Column(db.String(100))
 
+
 exam_question = db.Table('exam_question',
                          db.Column('exam_id', db.Integer, db.ForeignKey(
                              'exam.id'), primary_key=True),

@@ -101,6 +101,8 @@ def login():
             session['usuario_id'] = usuario.id
             if usuario.profile == 'professor':
                 return render_template('dashboard.html', css_file='styles.css')
+            elif usuario.profile == 'estudante':
+                return render_template('aluno.html', css_file='styles.css')
         error = "Usuário ou senha inválidos"
     else:
         error = None
