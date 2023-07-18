@@ -1,4 +1,6 @@
+from os import abort
 from flask import request, jsonify, session, render_template
+from flask_login import current_user
 from models import db, User, Question, Answer, Exam
 
 
@@ -172,21 +174,23 @@ def responder_exame(exame_id):
 
 
 def relatorio_exame(exame_id):
-    if not autenticado():
-        return jsonify({"error": "Acesso não autorizado"})
-
     exame = Exam.query.get(exame_id)
 
     if not exame:
-        return jsonify({"error": "Exame não encontrado"})
+        return jsonify({"error": "O exme não foi encontrad"})
 
     if exame.status != 'encerrado':
-        return jsonify({"error": "Exame não está encerrado"})
+        return jsonify({"error": "O exame não foi encerrado"})
 
     respostas = []
     for question in exame.questions:
-        questao_respostas = Answer.query.filter_by(
-            exame_id=exame_id, questao_id=question.id).all()
+        if current_user.profile == 'estudante':
+            questao_respostas = Answer.query.filter_by(
+                exame_id=exame_id, questao_id=question.id, user_id=current_user.id).all()
+        else:
+            questao_respostas = Answer.query.filter_by(
+                exame_id=exame_id, questao_id=question.id).all()
+
         for resposta in questao_respostas:
             if resposta.resposta == question.answer:
                 score = question.score
