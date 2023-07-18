@@ -69,6 +69,32 @@
           <button type="submit">Close Exam</button>
         </form>
       </div>
+
+        <div class="grid-item">
+            <h2>Results</h2>
+            <form id="ResultsForm" action="/visualizar_resultados">
+                <label for="exameId">Exam ID:</label>
+                <input type="text" id="exameId" name="exameID" required>
+
+                <label for="turma">Turma:</label>
+                <input type="text" id="turma" name="turma" required>
+
+                <label for="disciplina">Disciplina:</label>
+                <input type="text" id="disciplina" name="disciplina" required>
+
+                <label for="periodo">Periodo:</label>
+                <input type="text" id="periodo" name="periodo" required>
+
+                <input type="submit" value="View">
+            </form>
+        </div>
+        <div class="grid-item">
+            <h2>Evaluate exams</h2>
+            <form id="EvaluateExamsForm" action="/exames/<int:exame_id>/avaliar", methods=['POST']>
+                <input type="submit" value="Assess">
+
+            </form>
+        </div>
     </div>
   </div>
 
