@@ -203,10 +203,11 @@ def create_question():
     request_data = request.get_json()
     question_text = request_data.get('question')
     answer_text = request_data.get('answer')
+    score_text = request_data.get('score')
     if not question_text or not answer_text:
         return jsonify({'error': 'Missing required fields'}), 400
 
-    new_question = Question(question=question_text, answer=answer_text)
+    new_question = Question(question=question_text, answer=answer_text, score=score_text)
     db.session.add(new_question)
     db.session.commit()
 
@@ -246,7 +247,6 @@ def avaliar_respostas(exame_id):
     for resposta in respostas_alunos:
         questao = Question.query.get(resposta.questao_id)
         if questao and resposta.resposta == questao.answer:
-            # Atualizar pontuação da resposta correta
             resposta.pontuacao = questao.score
             pontuacao_total += questao.score
 
