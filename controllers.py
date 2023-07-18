@@ -14,9 +14,8 @@ def seed_data():
     db.session.add(ester)
 
     questao1 = Question(
-        question='Qual é a capital do Brasil?', answer='Brasília')
-    questao2 = Question(question='Quanto é meia dúzia?',
-                        answer='6')
+        question='Qual é a capital do Brasil?', answer='Brasília', score='30')
+    questao2 = Question(question='Quanto é meia dúzia?', answer='6', score='30')
     db.session.add(questao1)
     db.session.add(questao2)
 
@@ -114,13 +113,13 @@ def create_exam():
         return jsonify({"error": "Acesso não autorizado"})
 
     data = request.get_json()
-    # title = data.get('title')
-    # description = data.get('description')
+    title = data.get('title')
+    description = data.get('description')
     questions = data.get('questions')
-    # total_score = data.get('total_score')
+    total_score = data.get('total_score')
 
-    # if not title or not description or not total_score:
-    #     return jsonify({"error": "Dados incompletos"})
+    if not title or not description or not total_score:
+        return jsonify({"error": "Dados incompletos"})
 
     if not questions or not isinstance(questions, list):
         return jsonify({"error": "Questões inválidas"})
@@ -130,11 +129,11 @@ def create_exam():
 
     for question_data in questions:
         question_id = question_data.get('id')
-        # question_score = question_data.get('score')
+        question_score = question_data.get('score')
         question = Question.query.get(int(question_id))
         if question:
             new_exam.questions.append(question)
-            # question.score = question_score
+            question.score = question_score
 
     db.session.commit()
 
