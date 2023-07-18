@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from controllers import seed_data, registro, login, create_exam, responder_exame, relatorio_exame, create_question, close_exam, visualizar_resultados, avaliar_respostas
+from controllers import seed_data, registro, login, create_exam, responder_exame, relatorio_exame, create_question, close_exam, visualizar_resultados, avaliar_exame
 
 import secrets
 
@@ -69,7 +69,7 @@ def visualizar_resultados_route():
 
 @app.route('/exames/<int:exame_id>/avaliar', methods=['POST'])
 def evaluate_exam_route(exame_id):
-    return avaliar_respostas(exame_id)
+    return avaliar_exame(exame_id)
 
 
 if __name__ == '__main__':

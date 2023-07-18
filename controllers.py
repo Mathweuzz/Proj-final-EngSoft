@@ -317,9 +317,6 @@ def visualizar_resultados():
 
 
 def avaliar_exame(exame_id):
-    if not autenticado():
-        return jsonify({"error": "Acesso não autorizado"})
-
     exame = Exam.query.get(exame_id)
 
     if not exame:
@@ -328,27 +325,18 @@ def avaliar_exame(exame_id):
     if exame.status != 'encerrado':
         return jsonify({"error": "Exame não está encerrado"})
 
-    gabarito = {}
+    resultados = []
+    for aluno in exame.students:
+        pontuacao_total = 0
+        for questao in exame.questions:
+            resposta = Answer.query.filter_by(
+                exame_id=exame_id, questao_id=questao.id, user_id=aluno.id).first()
+            if resposta and resposta.resposta == questao.answer:
+                pontuacao_total += questao.score
 
-    for question in exame.questions:
-        gabarito[question.id] = question.answer
+        resultados.append({
+            "aluno": aluno.username,
+            "pontuacao_total": pontuacao_total
+        })
 
-    alunos = User.query.filter_by(profile='estudante').all()
-    for aluno in alunos:
-        respostas_aluno = Answer.query.filter_by(
-            exame_id=exame_id, user_id=aluno.id).all()
-
-        pontuacao_aluno = 0
-        for resposta in respostas_aluno:
-            if resposta.questao_id in gabarito:
-                if resposta.resposta == gabarito[resposta.questao_id]:
-                    pontuacao_aluno += Question.query.get(
-                        resposta.questao_id).score
-
-        resposta_exame = Answer.query.filter_by(
-            exame_id=exame_id, user_id=aluno.id).first()
-        resposta_exame.pontuacao = pontuacao_aluno
-
-    db.session.commit()
-
-    return jsonify({"message": "Exame avaliado com sucesso"})
+    return jsonify({"resultados": resultados})
