@@ -8,7 +8,7 @@ Na página inicial há duas opções: login e registro. No login, usa-se o nome 
 
 # Página do professor
 
-Ao logar, o professor é apresentado à uma página de dashboard com as opções de criar uma nova questão, criar uma nova prova com as questões criadas, gerar relatórios e corrigir provas. Basta clicar na opção desejada e informar o id da prova desejada, se necessário.
+Ao logar, o professor é apresentado à uma página de dashboard com as opções de criar uma nova questão, criar uma nova prova com as questões criadas, gerar relatórios e corrigir provas. Basta clicar na opção desejada e informar o id da prova desejada, se necessário. O relatório (se o usuário logado é um professor) mostra a resposta de todos os alunos, enquanto para um aluno mostra apenas as suas respostas. Para criar uma questão, basta informar o enunciado, a resposta e a pontuação. Para criar uma prova, basta informar os campos de nome da prova e o id das questões que a compõem.
 
 # Página do aluno
 
