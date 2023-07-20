@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: "Poppins", sans-serif;
+  font-family: Arial, sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
@@ -36,7 +36,7 @@ body {
 
 .title {
   font-size: 28px;
-  color: royalblue;
+  color: #5D54A4;
   font-weight: 600;
   letter-spacing: -1px;
   position: relative;
@@ -53,13 +53,13 @@ body {
   width: 16px;
   border-radius: 50%;
   left: 0px;
-  background-color: royalblue;
+  background-color: #5D54A4;
 }
 
 .title::before {
   width: 18px;
   height: 18px;
-  background-color: royalblue;
+  background-color: #5D54A4;
 }
 
 .title::after {
@@ -79,11 +79,11 @@ body {
 }
 
 .signin a {
-  color: royalblue;
+  color: #5D54A4;
 }
 
 .signin a:hover {
-  text-decoration: underline royalblue;
+  text-decoration: underline #5D54A4;
 }
 
 .flex {
@@ -127,13 +127,13 @@ body {
 }
 
 .form label .input:valid + span {
-  color: green;
+  color: #5D54A4;
 }
 
 .submit {
   border: none;
   outline: none;
-  background-color: royalblue;
+  background-color: #5D54A4;
   padding: 10px;
   border-radius: 10px;
   color: #fff;
@@ -142,7 +142,18 @@ body {
 }
 
 .submit:hover {
-  background-color: rgb(56, 90, 194);
+  background-color: #6A679E;
+}
+
+.custom-select {
+  border-radius: 20px;
+  max-width: 350px;
+  background-color: rgba(93, 84, 164, 0.9);
+  color: #fff;
+}
+
+#custom-span {
+  color: rgba(88, 87, 87, 0.822);
 }
 
 @keyframes pulse {
