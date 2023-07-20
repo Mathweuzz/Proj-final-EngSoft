@@ -24,6 +24,7 @@ h1 {
 	top: 0;
 	left: 50%;
 	transform: translateX(-50%);
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .container {
