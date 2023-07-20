@@ -1,11 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Web App</title>
+    <title>Registro</title>
     <link rel="stylesheet" href="{{url_for('static', filename=css_file)}}">
+    <style>
+        .container {
+            background: linear-gradient(90deg, #C7C5F4, #776BCC);
+        }
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin-top: 50px;
+            font-size: 28px;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        body {
+            background: transparent;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to My Web App</h1>
+    <h1>Registre-se agora mesmo!</h1>
 
 
     <div class="container">
@@ -14,12 +32,12 @@
             {% if msg %}
             <p>{{ msg }}</p>
             {% endif %}
-            <p class="title">Register </p>
-            <p class="message">Signup now and get full access to our app. </p>
+            <p class="title">Registro </p>
+            <p class="message">Registre-se para aplicar ou responder exames online. </p>
          
             <label>
                 <input required="" placeholder="" type="text" name="username" class="input">
-                <span>User</span>
+                <span>Usuário</span>
             </label>
          
             <label>
@@ -29,18 +47,18 @@
             
             <label>
                 <input required="" placeholder="" type="password" name="password" class="input">
-                <span>Password</span>
+                <span>Senha</span>
             </label>
             <label>
                 <span>Função: </span>
                 <select name="role" required>
-                    <option value="">Select an option</option>
+                    <option value="">Escolha uma opção</option>
                     <option value="professor">Professor</option>
                     <option value="estudante">Estudante</option>
                 </select>
             </label>
-            <button class="submit">Submit</button>
-            <p class="signin">Already have an account? <a href="{{ url_for('login_route') }}">Login</a></p>
+            <button class="submit">Registrar</button>
+            <p class="signin">Já possui uma conta? <a href="{{ url_for('login_route') }}">Login</a></p>
         </form>
     </div>
     
