@@ -181,30 +181,41 @@ def exam_report_route(exame_id):
     if not exame:
         return jsonify({"error": "O exame não foi encontrado"})
 
-    if exame.status != 'encerrado':
-        return jsonify({"error": "O exame não foi encerrado"})
-
     user_id = session.get('usuario_id')  # Retrieve the user_id from the session
 
-    respostas = []
-    for question in exame.questions:
-        questao_respostas = Answer.query.filter_by(
-            exame_id=exame_id, questao_id=question.id, user_id=user_id).all()
+    if 'professor' in session:
+        # If the user is a teacher, retrieve all exam submissions
+        all_submissions = Answer.query.filter_by(exame_id=exame_id).all()
 
-        for resposta in questao_respostas:
-            if resposta.resposta == question.answer:
-                score = question.score
-            else:
-                score = 0
+        respostas = []
+        for submission in all_submissions:
+            questao = Question.query.get(submission.questao_id)
             respostas.append({
-                "pergunta": question.question,
-                "resposta": resposta.resposta,
-                "correta": question.answer,
-                "usuario": resposta.user_id,
-                "pontuacao": score
+                "aluno": submission.user_id,
+                "questao": questao.question,
+                "resposta_aluno": submission.resposta,
+                "resposta_correta": questao.answer,
+                "pontuacao": submission.pontuacao
             })
 
-    return jsonify({"respostas": respostas})
+        return jsonify({"respostas": respostas})
+
+    else:
+        # If the user is a student, retrieve their exam submission only
+        user_submission = Answer.query.filter_by(
+            exame_id=exame_id, user_id=user_id).all()
+
+        respostas = []
+        for submission in user_submission:
+            questao = Question.query.get(submission.questao_id)
+            respostas.append({
+                "questao": questao.question,
+                "resposta_aluno": submission.resposta,
+                "resposta_correta": questao.answer,
+                "pontuacao": submission.pontuacao
+            })
+
+        return jsonify({"respostas": respostas})
 
 # Route to load questions based on the exam ID
 @app.route('/exames/<int:exame_id>/questions', methods=['GET'])

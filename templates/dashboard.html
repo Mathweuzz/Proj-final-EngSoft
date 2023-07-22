@@ -66,14 +66,22 @@
       </form>
       </div>
 
-      <div class="grid-item">
-        <h2>Generate Report</h2>
-        <form id="reportForm">
-          <label for="exameId">Exam ID:</label>
-          <input type="text" id="exameId" name="exameId" required>
-          <br><br>
-          <button type="submit">Generate Report</button>
-        </form>
+      <div class="grid-container">
+        <!-- Existing Generate Report Section -->
+        <div class="grid-item">
+          <h2>Generate Report</h2>
+          <form id="reportForm">
+            <label for="exameId">Exam ID:</label>
+            <input type="text" id="exameId" name="exameId" required>
+            <br><br>
+            <button type="submit">Generate Report</button>
+          </form>
+        </div>
+    
+        <!-- New Exam Report Section -->
+        <div class="grid-item">
+          <div id="reportContainer" style="display: none;"></div>
+        </div>
       </div>
 
       <div class="grid-item">
@@ -228,7 +236,7 @@
   });
     });
     
-    // Report form submission
+    // Envio do formulário de relatório
     $(document).ready(function() {
       $('#reportForm').submit(function(event) {
         event.preventDefault();
@@ -242,10 +250,24 @@
           success: function(response) {
             var respostas = response.respostas;
     
-            // Process the report data as needed
-            console.log(respostas);
+            // Processar os dados do relatório conforme necessário
+            var reportHTML = '<h2>Exam Report</h2><table><tr><th>User ID</th><th>Question</th><th>Answer</th><th>Correct Answer</th><th>Score</th></tr>';
+            for (var i = 0; i < respostas.length; i++) {
+              var resposta = respostas[i];
+              reportHTML += '<tr>';
+              reportHTML += '<td>' + resposta.usuario + '</td>';
+              reportHTML += '<td>' + resposta.pergunta + '</td>';
+              reportHTML += '<td>' + resposta.resposta + '</td>';
+              reportHTML += '<td>' + resposta.correta + '</td>';
+              reportHTML += '<td>' + resposta.pontuacao + '</td>';
+              reportHTML += '</tr>';
+            }
+            reportHTML += '</table>';
     
-            // Reset the form
+            $('#reportContainer').html(reportHTML);
+            $('#reportContainer').show();
+    
+            // Resetar o formulário
             form[0].reset();
           },
           error: function(xhr, textStatus, error) {
@@ -322,9 +344,8 @@
         error: function (xhr, textStatus, error) {
           console.error(xhr.status + ': ' + xhr.responseText);
         }
-      });
-  
-      // Rest of your existing JavaScript code...
+      }); 
+      
     });
   </script>
   

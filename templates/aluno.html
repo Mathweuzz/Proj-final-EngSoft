@@ -39,7 +39,8 @@
         <button type="submit">Generate Report</button>
       </form>
     </div>
-  </div>
+    <div id="reportContainer" class="card" style="display: none;"></div>
+
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
@@ -118,32 +119,44 @@
   });
 
     // Envio do formulário de relatório
-    $(document).ready(function() {
-      $('#reportForm').submit(function(event) {
-        event.preventDefault();
-    
-        var form = $(this);
-        var exameId = form.find('#exameId').val();
-    
-        $.ajax({
-          type: 'GET',
-          url: '/exames/' + exameId + '/relatorio',
-          success: function(response) {
-            var respostas = response.respostas;
-    
-            // Processar os dados do relatório conforme necessário
-            console.log(respostas);
-    
-            // Resetar o formulário
-            form[0].reset();
-          },
-          error: function(xhr, textStatus, error) {
-            var errorMessage = xhr.responseJSON.error;
-            alert(errorMessage);
-          }
-        });
+  $(document).ready(function () {
+    $('#reportForm').submit(function (event) {
+      event.preventDefault();
+
+      var form = $(this);
+      var exameId = form.find('#exameId').val();
+
+      $.ajax({
+        type: 'GET',
+        url: '/exames/' + exameId + '/relatorio',
+        success: function (response) {
+          var respostas = response.respostas;
+
+          // Processar os dados do relatório
+          var reportContent = '<h2>Exam Report</h2>';
+          reportContent += '<table>';
+          reportContent += '<tr><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Score</th></tr>';
+          respostas.forEach(function (resposta) {
+            reportContent += '<tr>';
+            reportContent += '<td>' + resposta.questao + '</td>';
+            reportContent += '<td>' + resposta.resposta_aluno + '</td>';
+            reportContent += '<td>' + resposta.resposta_correta + '</td>';
+            reportContent += '<td>' + resposta.pontuacao + '</td>';
+            reportContent += '</tr>';
+          });
+          reportContent += '</table>';
+
+          // Display the report content
+          $('#reportContainer').html(reportContent);
+          $('#reportContainer').show();
+        },
+        error: function (xhr, textStatus, error) {
+          var errorMessage = xhr.responseJSON.error;
+          alert(errorMessage);
+        }
       });
     });
+  });
   </script>
 </body>
 </html>
