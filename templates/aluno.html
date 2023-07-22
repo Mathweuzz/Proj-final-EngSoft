@@ -11,16 +11,22 @@
   <div class="grid-container">
     <div class="card">
       <h2>Answer Question</h2>
-      <!-- Campos do formulário de resposta -->
-      <form id="responderExameForm">
+      <!-- Campo do formulário para inserir o ID do exame -->
+      <form id="exameForm">
         <label for="exameId">Exame ID:</label>
         <input type="text" id="exameId" name="exameId" required>
         <br><br>
-        <label for="respostas">Respostas:</label>
-        <br>
-        <textarea id="respostas" name="respostas" rows="5" required></textarea>
+        <button type="button" id="loadQuestionsBtn">Load Questions</button>
+      </form>
+    </div>
+
+    <div id="questionsContainer" class="card" style="display: none;">
+      <h2>Exam Questions</h2>
+      <form id="responderExameForm">
+        <input type="hidden" id="exameIdHidden" name="exameIdHidden">
+        <div id="questionsList"></div>
         <br><br>
-        <button type="submit">Responder Exame</button>
+        <button type="submit">Submit Answers</button>
       </form>
     </div>
 
@@ -37,35 +43,79 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-    // Envio do formulário de resposta
-    $(document).ready(function() {
-      $('#responderExameForm').submit(function(event) {
-        event.preventDefault();
-    
-        var form = $(this);
-        var exameId = form.find('#exameId').val();
-        var respostas = form.find('#respostas').val();
-    
-        var jsonData = {
-          respostas: JSON.parse(respostas)
-        };
-    
-        $.ajax({
-          type: 'POST',
-          url: '/exames/' + exameId + '/responder',
-          data: JSON.stringify(jsonData),
-          contentType: 'application/json',
-          success: function(response) {
-            alert(response.message);
-            form[0].reset();
-          },
-          error: function(xhr, textStatus, error) {
-            var errorMessage = xhr.responseJSON.error;
-            alert(errorMessage);
+    // Envio do formulário para carregar as perguntas
+  $(document).ready(function () {
+    $('#loadQuestionsBtn').click(function () {
+      var exameId = $('#exameId').val();
+      $('#exameIdHidden').val(exameId);
+
+      // Get questions via AJAX and populate the form
+      $.ajax({
+        type: 'GET',
+        url: '/exames/' + exameId + '/questions',
+        success: function (response) {
+          var questionsList = $('#questionsList');
+          questionsList.empty(); // Clear previous questions (if any)
+
+          if (response.error) {
+            alert(response.error);
+          } else {
+            response.questions.forEach(function (question) {
+              questionsList.append(
+                '<label for="questao' + question.id + '">Question ' + question.id + ':</label>' +
+                '<br>' +
+                '<textarea id="questao' + question.id + '" name="questao' + question.id + '" rows="5" required></textarea>' +
+                '<br><br>'
+              );
+            });
+
+            // Show the questions container
+            $('#questionsContainer').show();
           }
-        });
+        },
+        error: function (xhr, textStatus, error) {
+          var errorMessage = xhr.responseJSON.error;
+          alert(errorMessage);
+        },
       });
     });
+  });
+  // Envio do formulário de resposta
+  $(document).ready(function () {
+    $('#responderExameForm').submit(function (event) {
+      event.preventDefault();
+
+      var form = $(this);
+      var exameId = form.find('#exameId').val();
+
+      // Serialize the form data into an object
+      var respostas = {};
+      form.find('textarea[name^="questao"]').each(function () {
+        var questaoId = $(this).attr('name').replace('questao', '');
+        var resposta = $(this).val();
+        respostas[questaoId] = resposta;
+      });
+
+      var jsonData = {
+        respostas: respostas,
+      };
+
+      $.ajax({
+        type: 'POST',
+        url: '/exames/' + exameId + '/responder',
+        data: JSON.stringify(jsonData),
+        contentType: 'application/json',
+        success: function (response) {
+          alert(response.message);
+          form[0].reset();
+        },
+        error: function (xhr, textStatus, error) {
+          var errorMessage = xhr.responseJSON.error;
+          alert(errorMessage);
+        },
+      });
+    });
+  });
 
     // Envio do formulário de relatório
     $(document).ready(function() {

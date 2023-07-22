@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 from flask_cors import CORS
 from controllers import seed_data, registro, login, create_exam, responder_exame, relatorio_exame, create_question, close_exam, visualizar_resultados, avaliar_exame
-from models import Question
+from models import User, Question, Answer, Exam, db  
 import secrets
+
 
 secret_key = secrets.token_hex(16)
 app = Flask(__name__)
@@ -43,14 +44,14 @@ def create_exam_route():
     return create_exam()
 
 
-@app.route('/exames/<int:exame_id>/responder', methods=['POST'])
-def responder_exame_route(exame_id):
-    return responder_exame(exame_id)
+# @app.route('/exames/<int:exame_id>/responder', methods=['POST'])
+# def responder_exame_route(exame_id):
+#     return responder_exame(exame_id)
 
 
-@app.route('/exames/<int:exame_id>/relatorio', methods=['GET'])
-def exam_report_route(exame_id):
-    return relatorio_exame(exame_id)
+# @app.route('/exames/<int:exame_id>/relatorio', methods=['GET'])
+# def exam_report_route(exame_id):
+#     return relatorio_exame(exame_id)
 
 
 @app.route('/questions', methods=['POST'])
@@ -90,6 +91,133 @@ def get_questions():
             pass
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+ 
+# Route to render the student dashboard
+@app.route('/dashboard_student')
+def student_dashboard():
+    return render_template('aluno.html', css_file='aluno.css')
+
+
+# Route to answer individual questions in an exam
+@app.route('/exames/<int:exame_id>/responder', methods=['POST'])
+def responder_exame_route(exame_id):
+    if 'usuario_id' not in session:
+        return jsonify({"error": "Acesso não autorizado"})
+
+    exame = Exam.query.get(exame_id)
+    if not exame:
+        return jsonify({"error": "Exame não encontrado"})
+
+    data = request.get_json()
+    respostas = data.get('respostas')
+
+    if not respostas:
+        return jsonify({"error": "Nenhuma resposta fornecida"})
+
+    user_id = session['usuario_id']  # Retrieve the user_id from the session
+
+    total_score = 0
+    feedback = []
+    for question_id, resposta in respostas.items():
+        question = Question.query.get(int(question_id))
+        if not question:
+            return jsonify({"error": "Questão não encontrada"})
+
+        score = 0
+        if resposta == question.answer:
+            score = question.score
+            total_score += score
+
+        feedback.append({
+            "question": question.question,
+            "answer": resposta,
+            "correct_answer": question.answer,
+            "score": score
+        })
+
+    # Update the user's total score for the exam
+    user = User.query.get(user_id)
+    user.total_score += total_score
+
+    exame.answered = True
+    db.session.commit()
+
+    return jsonify({"feedback": feedback, "total_score": total_score})
+
+    if 'usuario_id' not in session:
+        return jsonify({"error": "Acesso não autorizado"})
+
+    exame = Exam.query.get(exame_id)
+    if not exame:
+        return jsonify({"error": "Exame não encontrado"})
+
+    data = request.get_json()
+    respostas = data.get('respostas')
+
+    if not respostas:
+        return jsonify({"error": "Nenhuma resposta fornecida"})
+
+    user_id = session['usuario_id']  # Retrieve the user_id from the session
+
+    for questao_id, resposta in respostas.items():
+        nova_resposta = Answer(
+            exame_id=exame_id,
+            questao_id=int(questao_id),
+            resposta=resposta,
+            user_id=user_id  # Include the user_id in the nova_resposta object
+        )
+        db.session.add(nova_resposta)
+
+    exame.answered = True
+    db.session.commit()
+    return jsonify({"success": "Exame respondido com sucesso"})
+
+
+# Route to generate the exam report for the student
+@app.route('/exames/<int:exame_id>/relatorio', methods=['GET'])
+def exam_report_route(exame_id):
+    exame = Exam.query.get(exame_id)
+
+    if not exame:
+        return jsonify({"error": "O exame não foi encontrado"})
+
+    if exame.status != 'encerrado':
+        return jsonify({"error": "O exame não foi encerrado"})
+
+    user_id = session.get('usuario_id')  # Retrieve the user_id from the session
+
+    respostas = []
+    for question in exame.questions:
+        questao_respostas = Answer.query.filter_by(
+            exame_id=exame_id, questao_id=question.id, user_id=user_id).all()
+
+        for resposta in questao_respostas:
+            if resposta.resposta == question.answer:
+                score = question.score
+            else:
+                score = 0
+            respostas.append({
+                "pergunta": question.question,
+                "resposta": resposta.resposta,
+                "correta": question.answer,
+                "usuario": resposta.user_id,
+                "pontuacao": score
+            })
+
+    return jsonify({"respostas": respostas})
+
+# Route to load questions based on the exam ID
+@app.route('/exames/<int:exame_id>/questions', methods=['GET'])
+def load_exam_questions(exame_id):
+    exame = Exam.query.get(exame_id)
+
+    if not exame:
+        return jsonify({"error": "O exame não foi encontrado"})
+
+    questions = exame.questions
+    questions_data = [{"id": question.id, "question": question.question} for question in questions]
+
+    return jsonify({"questions": questions_data})
 
 if __name__ == '__main__':
     app.run(debug=True)
