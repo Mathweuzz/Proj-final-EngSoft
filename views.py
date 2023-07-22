@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
 from controllers import seed_data, registro, login, create_exam, responder_exame, relatorio_exame, create_question, close_exam, visualizar_resultados, avaliar_exame
-
+from models import Question
 import secrets
 
 secret_key = secrets.token_hex(16)
@@ -37,7 +38,7 @@ def login_route():
         return render_template('login.html', error=error, css_file='styles.css')
 
 
-@app.route('/exames', methods=['POST'])
+@app.route('/exames', methods=['GET', 'POST'])
 def create_exam_route():
     return create_exam()
 
@@ -71,6 +72,24 @@ def visualizar_resultados_route():
 def evaluate_exam_route(exame_id):
     return avaliar_exame(exame_id)
 
+CORS(app, resources={r"/get_questions": {"origins": "*"}})
+
+# Rota para obter as questões em formato JSON
+@app.route('/get_questions', methods=['GET', 'POST'])
+def get_questions():
+    try:
+        if request.method == 'GET':
+            questions = Question.query.all()
+            questions_data = [
+                {'id': question.id, 'question': question.question}
+                for question in questions
+            ]
+            return jsonify(questions_data)
+        elif request.method == 'POST':
+            # Handle the POST request if needed
+            pass
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

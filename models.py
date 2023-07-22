@@ -16,6 +16,8 @@ class Question(db.Model):
     question = db.Column(db.String(500), nullable=False)
     answer = db.Column(db.String(500), nullable=False)
     score = db.Column(db.Integer, nullable=False)
+    def get_all_questions():
+        return Question.query.all()
 
 
 class Answer(db.Model):
