@@ -97,13 +97,19 @@ def responder_exame_route(exame_id):
     if not exame:
         return jsonify({"error": "Exame não encontrado"})
 
+    # Verificar se o aluno já respondeu o exame anteriormente
+    user_id = session['usuario_id']
+    user_has_answered = Answer.query.filter_by(exame_id=exame_id, user_id=user_id).first()
+
+    if user_has_answered:
+        print('entrou aqui')
+        return jsonify({"error": "Você já respondeu esse exame. Não é permitido responder novamente."})
+
     data = request.get_json()
     respostas = data.get('respostas')
 
     if not respostas:
         return jsonify({"error": "Nenhuma resposta fornecida"})
-
-    user_id = session['usuario_id']
 
     total_score = 0
     feedback = []
@@ -145,6 +151,7 @@ def responder_exame_route(exame_id):
     db.session.commit()
 
     return jsonify({"feedback": feedback, "total_score": total_score})
+
 
 
 # Route to generate the exam report for the student
@@ -205,6 +212,19 @@ def load_exam_questions(exame_id):
     questions_data = [{"id": question.id, "question": question.question} for question in questions]
 
     return jsonify({"questions": questions_data})
+
+@app.route('/exames/<int:exame_id>/respondeu', methods=['GET'])
+def check_exam_answered(exame_id):
+    user_id = session.get('usuario_id')
+    if not user_id:
+        return jsonify({"respondeu": False})  # O aluno não está logado, então ainda não respondeu
+
+    exame_respondido = Answer.query.filter_by(exame_id=exame_id, user_id=user_id).first()
+    if exame_respondido:
+        return jsonify({"respondeu": True})  # O aluno já respondeu o exame
+    else:
+        return jsonify({"respondeu": False})  # O aluno ainda não respondeu o exame
+
 
 
 @app.route('/logout', methods=['GET', 'POST'])

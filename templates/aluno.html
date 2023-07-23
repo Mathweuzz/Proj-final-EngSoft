@@ -19,7 +19,7 @@
         <button type="button" id="loadQuestionsBtn">Load Questions</button>
       </form>
     </div>
-
+    
     <div id="questionsContainer" class="card" style="display: none;">
       <h2>Exam Questions</h2>
       <form id="responderExameForm" action="" method="post">
@@ -45,60 +45,80 @@
     </form>
   </div>
 
-
-
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     // Variável global para armazenar o valor do exameId
     var exameIdHidden = '';
 
-    // Função para carregar as perguntas na interface do usuário
-    function loadQuestions(questions) {
-      var questionsList = $('#questionsList');
-      questionsList.empty(); // Limpa as questões anteriores (se houver)
+  // Função para carregar as perguntas na interface do usuário
+  function loadQuestions(questions, exameId) {
+    var questionsList = $('#questionsList');
+    questionsList.empty(); // Limpa as questões anteriores (se houver)
 
-      questions.forEach(function (question) {
-        questionsList.append(
-          '<h3>Questão ' + question.id + ':</h3>' +
-          '<p>' + question.question + '</p>' +
-          '<label for="questao' + question.id + '">Resposta:</label>' +
-          '<br>' +
-          '<textarea id="questao' + question.id + '" name="questao' + question.id + '" rows="5" required></textarea>' +
-          '<br><br>'
-        );
-      });
+    // Define o ID do exame no campo escondido
+    $('#exameIdHidden').val(exameId);
 
-      // Mostra o container de questões
-      $('#questionsContainer').show();
-    }
-
-    // Envio do formulário para carregar as perguntas
-    $(document).ready(function () {
-      $('#loadQuestionsBtn').click(function () {
-        exameIdHidden = $('#exameId').val(); // Atualiza o valor da variável global
-        $('#exameIdHidden').val(exameIdHidden); // Atualiza o valor do campo escondido
-
-        // Get questions via AJAX and populate the form
-        $.ajax({
-          type: 'GET',
-          url: '/exames/' + exameIdHidden + '/questions',
-          success: function (response) {
-            var questionsList = $('#questionsList');
-            questionsList.empty(); // Clear previous questions (if any)
-
-            if (response.error) {
-              alert(response.error);
-            } else {
-              loadQuestions(response.questions);
-            }
-          },
-          error: function (xhr, textStatus, error) {
-            var errorMessage = xhr.responseJSON.error;
-            alert(errorMessage);
-          },
-        });
-      });
+    questions.forEach(function (question) {
+      questionsList.append(
+        '<h3>Questão ' + question.id + ':</h3>' +
+        '<p>' + question.question + '</p>' +
+        '<label for="questao' + question.id + '">Resposta:</label>' +
+        '<br>' +
+        '<textarea id="questao' + question.id + '" name="questao' + question.id + '" rows="5" required></textarea>' +
+        '<br><br>'
+      );
     });
+
+    // Mostra o container de questões
+    $('#questionsContainer').show();
+  }
+
+  // Função para verificar se o aluno já respondeu o exame
+  function checkIfExamAnswered(exameId) {
+    $.ajax({
+      type: 'GET',
+      url: '/exames/' + exameId + '/respondeu',
+      success: function (response) {
+        if (response.respondeu) {
+          alert('Você já respondeu esse exame. Não é permitido responder novamente.');
+        } else {
+          // Se o aluno não respondeu, carrega as perguntas do exame
+          $.ajax({
+            type: 'GET',
+            url: '/exames/' + exameId + '/questions',
+            success: function (response) {
+              var questionsList = $('#questionsList');
+              questionsList.empty(); // Limpa as questões anteriores (se houver)
+
+              if (response.error) {
+                alert(response.error);
+              } else {
+                loadQuestions(response.questions, exameId); // Passa o ID do exame para a função loadQuestions
+              }
+            },
+            error: function (xhr, textStatus, error) {
+              var errorMessage = xhr.responseJSON.error;
+              alert(errorMessage);
+            },
+          });
+        }
+      },
+      error: function (xhr, textStatus, error) {
+        var errorMessage = xhr.responseJSON.error;
+        alert(errorMessage);
+      }
+    });
+  }
+
+  // Envio do formulário para carregar as perguntas
+  $(document).ready(function () {
+    $('#loadQuestionsBtn').click(function () {
+      var exameId = $('#exameId').val(); // Obtem o valor do campo exameId
+
+      // Chama a função para verificar se o aluno já respondeu o exame
+      checkIfExamAnswered(exameId);
+    });
+  });
 
     // Envio do formulário de resposta
     $(document).ready(function () {
@@ -106,7 +126,7 @@
         event.preventDefault();
 
         var form = $(this);
-        var exameId = exameIdHidden; // Usa a variável global em vez de buscar no form
+        var exameId = $('#exameIdHidden').val(); // Obtém o ID do exame do campo escondido
 
         // Serialize the form data into an object
         var respostas = {};
@@ -126,8 +146,12 @@
           data: JSON.stringify(jsonData),
           contentType: 'application/json',
           success: function (response) {
-            alert("Prova respondida com sucesso!"); // Exibe a mensagem de sucesso
-            form[0].reset();
+            if (response.error) {
+              alert(response.error); // Exibe mensagem de erro, se houver
+            } else {
+              alert("Prova respondida com sucesso!"); // Exibe a mensagem de sucesso
+              form[0].reset();
+            }
           },
           error: function (xhr, textStatus, error) {
             var errorMessage = xhr.responseJSON.error;
