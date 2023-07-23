@@ -114,63 +114,48 @@ def responder_exame_route(exame_id):
     if not respostas:
         return jsonify({"error": "Nenhuma resposta fornecida"})
 
-    user_id = session['usuario_id']  # Retrieve the user_id from the session
+    user_id = session['usuario_id']
 
     total_score = 0
     feedback = []
-    for question_id, resposta in respostas.items():
-        question = Question.query.get(int(question_id))
-        if not question:
+    for questao_id, resposta_aluno in respostas.items():
+        questao = Question.query.get(int(questao_id))
+        if not questao:
             return jsonify({"error": "Questão não encontrada"})
 
         score = 0
-        if resposta == question.answer:
-            score = question.score
+        if resposta_aluno == questao.answer:
+            score = questao.score
             total_score += score
 
         feedback.append({
-            "question": question.question,
-            "answer": resposta,
-            "correct_answer": question.answer,
-            "score": score
+            "questao": questao.question,
+            "resposta_aluno": resposta_aluno,
+            "resposta_correta": questao.answer,
+            "pontuacao": score
         })
 
-    # Update the user's total score for the exam
-    user = User.query.get(user_id)
-    user.total_score += total_score
+        # Salvar as respostas do aluno no banco de dados (se necessário)
+        nova_resposta = Answer(
+            exame_id=exame_id,
+            questao_id=int(questao_id),
+            resposta=resposta_aluno,
+            user_id=user_id,
+            pontuacao=score
+        )
+        db.session.add(nova_resposta)
+
+    # Atualizar a pontuação total do aluno para o exame no modelo Answer
+    user_answers = Answer.query.filter_by(exame_id=exame_id, user_id=user_id).all()
+    total_score_user = sum(answer.pontuacao for answer in user_answers)
+
+    # Atualizar a pontuação total do exame no modelo Exam
+    exame.total_score = total_score
 
     exame.answered = True
     db.session.commit()
 
     return jsonify({"feedback": feedback, "total_score": total_score})
-
-    if 'usuario_id' not in session:
-        return jsonify({"error": "Acesso não autorizado"})
-
-    exame = Exam.query.get(exame_id)
-    if not exame:
-        return jsonify({"error": "Exame não encontrado"})
-
-    data = request.get_json()
-    respostas = data.get('respostas')
-
-    if not respostas:
-        return jsonify({"error": "Nenhuma resposta fornecida"})
-
-    user_id = session['usuario_id']  # Retrieve the user_id from the session
-
-    for questao_id, resposta in respostas.items():
-        nova_resposta = Answer(
-            exame_id=exame_id,
-            questao_id=int(questao_id),
-            resposta=resposta,
-            user_id=user_id  # Include the user_id in the nova_resposta object
-        )
-        db.session.add(nova_resposta)
-
-    exame.answered = True
-    db.session.commit()
-    return jsonify({"success": "Exame respondido com sucesso"})
 
 
 # Route to generate the exam report for the student
