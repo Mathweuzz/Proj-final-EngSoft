@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_cors import CORS
 from controllers import seed_data, registro, login, create_exam, responder_exame, relatorio_exame, create_question, close_exam, visualizar_resultados, avaliar_exame
 from models import User, Question, Answer, Exam, db  
@@ -42,17 +42,6 @@ def login_route():
 @app.route('/exames', methods=['GET', 'POST'])
 def create_exam_route():
     return create_exam()
-
-
-# @app.route('/exames/<int:exame_id>/responder', methods=['POST'])
-# def responder_exame_route(exame_id):
-#     return responder_exame(exame_id)
-
-
-# @app.route('/exames/<int:exame_id>/relatorio', methods=['GET'])
-# def exam_report_route(exame_id):
-#     return relatorio_exame(exame_id)
-
 
 @app.route('/questions', methods=['POST'])
 def create_question_route():
@@ -108,69 +97,61 @@ def responder_exame_route(exame_id):
     if not exame:
         return jsonify({"error": "Exame não encontrado"})
 
+    # Verificar se o aluno já respondeu o exame anteriormente
+    user_id = session['usuario_id']
+    user_has_answered = Answer.query.filter_by(exame_id=exame_id, user_id=user_id).first()
+
+    if user_has_answered:
+        print('entrou aqui')
+        return jsonify({"error": "Você já respondeu esse exame. Não é permitido responder novamente."})
+
     data = request.get_json()
     respostas = data.get('respostas')
 
     if not respostas:
         return jsonify({"error": "Nenhuma resposta fornecida"})
 
-    user_id = session['usuario_id']  # Retrieve the user_id from the session
-
     total_score = 0
     feedback = []
-    for question_id, resposta in respostas.items():
-        question = Question.query.get(int(question_id))
-        if not question:
+    for questao_id, resposta_aluno in respostas.items():
+        questao = Question.query.get(int(questao_id))
+        if not questao:
             return jsonify({"error": "Questão não encontrada"})
 
         score = 0
-        if resposta == question.answer:
-            score = question.score
+        if resposta_aluno == questao.answer:
+            score = questao.score
             total_score += score
 
         feedback.append({
-            "question": question.question,
-            "answer": resposta,
-            "correct_answer": question.answer,
-            "score": score
+            "questao": questao.question,
+            "resposta_aluno": resposta_aluno,
+            "resposta_correta": questao.answer,
+            "pontuacao": score
         })
 
-    # Update the user's total score for the exam
-    user = User.query.get(user_id)
-    user.total_score += total_score
+        # Salvar as respostas do aluno no banco de dados (se necessário)
+        nova_resposta = Answer(
+            exame_id=exame_id,
+            questao_id=int(questao_id),
+            resposta=resposta_aluno,
+            user_id=user_id,
+            pontuacao=score
+        )
+        db.session.add(nova_resposta)
+
+    # Atualizar a pontuação total do aluno para o exame no modelo Answer
+    user_answers = Answer.query.filter_by(exame_id=exame_id, user_id=user_id).all()
+    total_score_user = sum(answer.pontuacao for answer in user_answers)
+
+    # Atualizar a pontuação total do exame no modelo Exam
+    exame.total_score = total_score
 
     exame.answered = True
     db.session.commit()
 
     return jsonify({"feedback": feedback, "total_score": total_score})
 
-    if 'usuario_id' not in session:
-        return jsonify({"error": "Acesso não autorizado"})
-
-    exame = Exam.query.get(exame_id)
-    if not exame:
-        return jsonify({"error": "Exame não encontrado"})
-
-    data = request.get_json()
-    respostas = data.get('respostas')
-
-    if not respostas:
-        return jsonify({"error": "Nenhuma resposta fornecida"})
-
-    user_id = session['usuario_id']  # Retrieve the user_id from the session
-
-    for questao_id, resposta in respostas.items():
-        nova_resposta = Answer(
-            exame_id=exame_id,
-            questao_id=int(questao_id),
-            resposta=resposta,
-            user_id=user_id  # Include the user_id in the nova_resposta object
-        )
-        db.session.add(nova_resposta)
-
-    exame.answered = True
-    db.session.commit()
-    return jsonify({"success": "Exame respondido com sucesso"})
 
 
 # Route to generate the exam report for the student
@@ -183,7 +164,7 @@ def exam_report_route(exame_id):
 
     user_id = session.get('usuario_id')  # Retrieve the user_id from the session
 
-    if 'professor' in session:
+    if 'professor' in session.get('profile'):
         # If the user is a teacher, retrieve all exam submissions
         all_submissions = Answer.query.filter_by(exame_id=exame_id).all()
 
@@ -209,6 +190,7 @@ def exam_report_route(exame_id):
         for submission in user_submission:
             questao = Question.query.get(submission.questao_id)
             respostas.append({
+                "aluno": user_id,
                 "questao": questao.question,
                 "resposta_aluno": submission.resposta,
                 "resposta_correta": questao.answer,
@@ -216,6 +198,7 @@ def exam_report_route(exame_id):
             })
 
         return jsonify({"respostas": respostas})
+
 
 # Route to load questions based on the exam ID
 @app.route('/exames/<int:exame_id>/questions', methods=['GET'])
@@ -229,6 +212,25 @@ def load_exam_questions(exame_id):
     questions_data = [{"id": question.id, "question": question.question} for question in questions]
 
     return jsonify({"questions": questions_data})
+
+@app.route('/exames/<int:exame_id>/respondeu', methods=['GET'])
+def check_exam_answered(exame_id):
+    user_id = session.get('usuario_id')
+    if not user_id:
+        return jsonify({"respondeu": False})  # O aluno não está logado, então ainda não respondeu
+
+    exame_respondido = Answer.query.filter_by(exame_id=exame_id, user_id=user_id).first()
+    if exame_respondido:
+        return jsonify({"respondeu": True})  # O aluno já respondeu o exame
+    else:
+        return jsonify({"respondeu": False})  # O aluno ainda não respondeu o exame
+
+
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session.pop('usuario_id', None)
+    return redirect(url_for('login_route'))
 
 if __name__ == '__main__':
     app.run(debug=True)
