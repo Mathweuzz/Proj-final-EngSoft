@@ -106,22 +106,54 @@ N/A
 
 ## Estado atual do projeto:
 
-O projeto já é funcional e atende a todos os requisitos descritos no documento "Doc. de Especificação". Além disso, mudanças no sesign do site garantem uma experiência mais intuitiva e agradável para o usuário.
+O projeto já é funcional e atende a todos os requisitos descritos no documento "Doc. de Especificação". Além disso, mudanças no sesign do site garantem uma experiência mais intuitiva e agradável para o usuário. As funções implementadas são:
+
+- RA.01 - O sistema deve fornecer meios para autenticação de usuários com perfis de Professores e Estudantes.
+- RP.01 - Cadastrar questões do tipo múltipla escolha.
+- RP.02 - Cadastrar questões do tipo verdadeiro ou falso.
+- RP.03 - Cadastrar questões com resposta do tipo valor numérico.
+- RP.04 - Cadastrar um exame contendo um número arbitrário de questões.
+  - RP.06 - Atribuir um valor a cada questão presente no exame. Este valor deve ser considerado ao atribuir a nota a nota do aluno.
+  - RP.07 - A qualquer momento deve possibilitar a visualização de um relatório com as respostas dos estudantes a um exame.
+  - RP.08 - A qualquer momento deve possibilitar a visualização de um relatório com as nota obtida por cada estudante que respondeu a um dado exame.
+  - RE.01 - Realizar um exame, respondendo as questões definidas para este exame e concluindo ao final. Um exame concluído não pode ser editado.
+  - RE.02 - Visualizar a nota de um exame executado após este ser encerrado.
+  - RE.03 - Para um exame realizado e já encerrado, visualizar as questões acertada e erradas.
+  - RE.04 - Listar e visualizar dados de exames.
+  - RE.06 - Um exame em realização deve ser automaticamente concluído no momento de encerramento. Não permitindo a edição da resposta pelos estudantes.
+  - RG.01 - O sistema deve fornecer uma interface amigável e intuitiva para facilitar a interação dos usuários.
+  - RG.02 - O sistema deve ser responsivo, ou seja, adaptar-se a diferentes dispositivos (como computadores, tablets e smartphones) para oferecer uma experiência consistente.
+  - RG.03 - O sistema deve ser capaz de armazenar e recuperar dados de forma confiável, garantindo a integridade das informações. Deve ser utilizado um banco de dados.
+  - RD.01 - Para facilitar os testes, o sistema deve ser possível executar o sistema com SQLLite. O projeto deve incluir dados pre-carregado (seed) com seguintes as seguintes informações:
+    usuário: “pedro”, email: “pedro@unb.br”, senha: “asdfg”, perfil: professor
+    usuário: “ester”, email: “ester@unb.br” senha: “asdfg”, perfil: estudante
+    algumas questões
+    alguns exames em abertos e não respondidos pela ester
+    alguns exames em abertos e já respondidos pela ester
+    alguns exame agendados
+    alguns exames encerrados, e já respondidos pela ester
+    alguns exames encerrados, e não respondidos pela ester
+  - RQ.01 - O sistema deve seguir a arquitetura MVC
+  - RQ.02 - O sistema deve seguir a terminologia descrita nessa especificação quando aplicável, tanto na interface do usuário quanto no código do projeto.
+  - RQ.03 - O sistema deve seguir princípios DRY quanto aos templates (camada view)
+  - RQ.04 - O sistema deve seguir princípios DRY quanto aos controladores. Rotas devem seguir o padrão restful.
+  - RQ.05 - O sistema deve seguir princípios DRY quanto aos modelos.
 
 ## O que será desenvolvido na próxima iteração:
 
 Na próxima iteração, pretendemos realizar as seguintes tarefas:
 
-- Adicionar filtros mais detalhados
-- Implementar notificações para usuários sobre ações importantes.
-- Melhorias finais de design da aplicação.
+- Adição de verificação de data e hora para exames agendados
+- Melhorias finais de design da aplicação
 - Correção de bugs e melhorias.
+
+As tarefas relacionadas à data podem ser encontradas no documento "Doc. de Especificação" seções RP.05, RE.05
 
 ## Sprint Review:
 
 O que foi bem =)
 
-- Todos os requisitos foram antendidos e o projeto pôde ser entregue dentro do prazo.
+- Todos os requisitos principais foram antendidos e o projeto pôde ser entregue dentro do prazo.
 - Houve uma melhor comunicação entre os membros da equipe.
 - O design foi facilitado devido ao uso da biblioteca Boostrap.
 - Todas as funcionalidades estão devidamente testatas
