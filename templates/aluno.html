@@ -22,7 +22,7 @@
 
     <div id="questionsContainer" class="card" style="display: none;">
       <h2>Exam Questions</h2>
-      <form id="responderExameForm">
+      <form id="responderExameForm" action="" method="post">
         <input type="hidden" id="exameIdHidden" name="exameIdHidden">
         <div id="questionsList"></div>
         <br><br>
@@ -33,130 +33,144 @@
     <div class="card">
       <h2>Generate Report</h2>
       <form id="reportForm">
-        <label for="exameId">Exam ID:</label>
-        <input type="text" id="exameId" name="exameId" required>
+        <label for="reportExameId">Exam ID:</label>
+        <input type="text" id="reportExameId" name="exameId" required>
         <br><br>
         <button type="submit">Generate Report</button>
       </form>
     </div>
     <div id="reportContainer" class="card" style="display: none;"></div>
-
+  </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
+    // Variável global para armazenar o valor do exameId
+    var exameIdHidden = '';
+
+    // Função para carregar as perguntas na interface do usuário
+    function loadQuestions(questions) {
+      var questionsList = $('#questionsList');
+      questionsList.empty(); // Limpa as questões anteriores (se houver)
+
+      questions.forEach(function (question) {
+        questionsList.append(
+          '<h3>Questão ' + question.id + ':</h3>' +
+          '<p>' + question.question + '</p>' +
+          '<label for="questao' + question.id + '">Resposta:</label>' +
+          '<br>' +
+          '<textarea id="questao' + question.id + '" name="questao' + question.id + '" rows="5" required></textarea>' +
+          '<br><br>'
+        );
+      });
+
+      // Mostra o container de questões
+      $('#questionsContainer').show();
+    }
+
     // Envio do formulário para carregar as perguntas
-  $(document).ready(function () {
-    $('#loadQuestionsBtn').click(function () {
-      var exameId = $('#exameId').val();
-      $('#exameIdHidden').val(exameId);
+    $(document).ready(function () {
+      $('#loadQuestionsBtn').click(function () {
+        exameIdHidden = $('#exameId').val(); // Atualiza o valor da variável global
+        $('#exameIdHidden').val(exameIdHidden); // Atualiza o valor do campo escondido
 
-      // Get questions via AJAX and populate the form
-      $.ajax({
-        type: 'GET',
-        url: '/exames/' + exameId + '/questions',
-        success: function (response) {
-          var questionsList = $('#questionsList');
-          questionsList.empty(); // Clear previous questions (if any)
+        // Get questions via AJAX and populate the form
+        $.ajax({
+          type: 'GET',
+          url: '/exames/' + exameIdHidden + '/questions',
+          success: function (response) {
+            var questionsList = $('#questionsList');
+            questionsList.empty(); // Clear previous questions (if any)
 
-          if (response.error) {
-            alert(response.error);
-          } else {
-            response.questions.forEach(function (question) {
-              questionsList.append(
-                '<label for="questao' + question.id + '">Question ' + question.id + ':</label>' +
-                '<br>' +
-                '<textarea id="questao' + question.id + '" name="questao' + question.id + '" rows="5" required></textarea>' +
-                '<br><br>'
-              );
-            });
-
-            // Show the questions container
-            $('#questionsContainer').show();
-          }
-        },
-        error: function (xhr, textStatus, error) {
-          var errorMessage = xhr.responseJSON.error;
-          alert(errorMessage);
-        },
+            if (response.error) {
+              alert(response.error);
+            } else {
+              loadQuestions(response.questions);
+            }
+          },
+          error: function (xhr, textStatus, error) {
+            var errorMessage = xhr.responseJSON.error;
+            alert(errorMessage);
+          },
+        });
       });
     });
-  });
-  // Envio do formulário de resposta
-  $(document).ready(function () {
-    $('#responderExameForm').submit(function (event) {
-      event.preventDefault();
 
-      var form = $(this);
-      var exameId = form.find('#exameId').val();
+    // Envio do formulário de resposta
+    $(document).ready(function () {
+      $('#responderExameForm').submit(function (event) {
+        event.preventDefault();
 
-      // Serialize the form data into an object
-      var respostas = {};
-      form.find('textarea[name^="questao"]').each(function () {
-        var questaoId = $(this).attr('name').replace('questao', '');
-        var resposta = $(this).val();
-        respostas[questaoId] = resposta;
-      });
+        var form = $(this);
+        var exameId = exameIdHidden; // Usa a variável global em vez de buscar no form
 
-      var jsonData = {
-        respostas: respostas,
-      };
+        // Serialize the form data into an object
+        var respostas = {};
+        form.find('textarea[name^="questao"]').each(function () {
+          var questaoId = $(this).attr('name').replace('questao', '');
+          var resposta = $(this).val();
+          respostas[questaoId] = resposta;
+        });
 
-      $.ajax({
-        type: 'POST',
-        url: '/exames/' + exameId + '/responder',
-        data: JSON.stringify(jsonData),
-        contentType: 'application/json',
-        success: function (response) {
-          alert(response.message);
-          form[0].reset();
-        },
-        error: function (xhr, textStatus, error) {
-          var errorMessage = xhr.responseJSON.error;
-          alert(errorMessage);
-        },
+        var jsonData = {
+          respostas: respostas,
+        };
+
+        $.ajax({
+          type: 'POST',
+          url: '/exames/' + exameId + '/responder',
+          data: JSON.stringify(jsonData),
+          contentType: 'application/json',
+          success: function (response) {
+            alert("Prova respondida com sucesso!"); // Exibe a mensagem de sucesso
+            form[0].reset();
+          },
+          error: function (xhr, textStatus, error) {
+            var errorMessage = xhr.responseJSON.error;
+            alert(errorMessage);
+          },
+        });
       });
     });
-  });
 
     // Envio do formulário de relatório
-  $(document).ready(function () {
-    $('#reportForm').submit(function (event) {
-      event.preventDefault();
+    $(document).ready(function () {
+      $('#reportForm').submit(function (event) {
+        event.preventDefault();
 
-      var form = $(this);
-      var exameId = form.find('#exameId').val();
+        var form = $(this);
+        var exameId = $('#reportExameId').val(); // Obtem o valor do campo reportExameId
 
-      $.ajax({
-        type: 'GET',
-        url: '/exames/' + exameId + '/relatorio',
-        success: function (response) {
-          var respostas = response.respostas;
+        $.ajax({
+          type: 'GET',
+          url: '/exames/' + exameId + '/relatorio',
+          success: function (response) {
+            var respostas = response.respostas;
 
-          // Processar os dados do relatório
-          var reportContent = '<h2>Exam Report</h2>';
-          reportContent += '<table>';
-          reportContent += '<tr><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Score</th></tr>';
-          respostas.forEach(function (resposta) {
-            reportContent += '<tr>';
-            reportContent += '<td>' + resposta.questao + '</td>';
-            reportContent += '<td>' + resposta.resposta_aluno + '</td>';
-            reportContent += '<td>' + resposta.resposta_correta + '</td>';
-            reportContent += '<td>' + resposta.pontuacao + '</td>';
-            reportContent += '</tr>';
-          });
-          reportContent += '</table>';
+            // Processar os dados do relatório
+            var reportContent = '<h2>Exam Report</h2>';
+            reportContent += '<table>';
+            reportContent += '<tr><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Score</th></tr>';
+            respostas.forEach(function (resposta) {
+              reportContent += '<tr>';
+              reportContent += '<td>' + resposta.questao + '</td>';
+              reportContent += '<td>' + resposta.resposta_aluno + '</td>';
+              reportContent += '<td>' + resposta.resposta_correta + '</td>';
+              reportContent += '<td>' + resposta.pontuacao + '</td>';
+              reportContent += '</tr>';
+            });
+            reportContent += '</table>';
 
-          // Display the report content
-          $('#reportContainer').html(reportContent);
-          $('#reportContainer').show();
-        },
-        error: function (xhr, textStatus, error) {
-          var errorMessage = xhr.responseJSON.error;
-          alert(errorMessage);
-        }
+            // Display the report content
+            $('#reportContainer').html(reportContent);
+            $('#reportContainer').show();
+          },
+          error: function (xhr, textStatus, error) {
+            var errorMessage = xhr.responseJSON.error;
+            alert(errorMessage);
+          }
+        });
       });
     });
-  });
   </script>
 </body>
 </html>
