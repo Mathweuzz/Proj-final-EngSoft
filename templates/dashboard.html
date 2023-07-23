@@ -74,7 +74,7 @@
             <label for="exameId">Exam ID:</label>
             <input type="text" id="exameId" name="exameId" required>
             <br><br>
-            <button type="submit">Generate Report</button>
+            <button type="submit" id="generateReportBtn">Generate Report</button>
           </form>
         </div>
     
@@ -238,45 +238,52 @@
     
     // Envio do formulário de relatório
     $(document).ready(function() {
-      $('#reportForm').submit(function(event) {
-        event.preventDefault();
-    
-        var form = $(this);
-        var exameId = form.find('#exameId').val();
-    
-        $.ajax({
-          type: 'GET',
-          url: '/exames/' + exameId + '/relatorio',
-          success: function(response) {
-            var respostas = response.respostas;
-    
-            // Processar os dados do relatório conforme necessário
-            var reportHTML = '<h2>Exam Report</h2><table><tr><th>User ID</th><th>Question</th><th>Answer</th><th>Correct Answer</th><th>Score</th></tr>';
-            for (var i = 0; i < respostas.length; i++) {
-              var resposta = respostas[i];
-              reportHTML += '<tr>';
-              reportHTML += '<td>' + resposta.usuario + '</td>';
-              reportHTML += '<td>' + resposta.pergunta + '</td>';
-              reportHTML += '<td>' + resposta.resposta + '</td>';
-              reportHTML += '<td>' + resposta.correta + '</td>';
-              reportHTML += '<td>' + resposta.pontuacao + '</td>';
-              reportHTML += '</tr>';
-            }
-            reportHTML += '</table>';
-    
-            $('#reportContainer').html(reportHTML);
-            $('#reportContainer').show();
-    
-            // Resetar o formulário
-            form[0].reset();
-          },
-          error: function(xhr, textStatus, error) {
-            var errorMessage = xhr.responseJSON.error;
-            alert(errorMessage);
+    $('#reportForm').submit(function(event) {
+      event.preventDefault();
+
+      var form = $(this);
+      var exameId = form.find('#exameId').val();
+
+      $.ajax({
+        type: 'GET',
+        url: '/exames/' + exameId + '/relatorio',
+        success: function(response) {
+          var respostas = response.respostas;
+
+          // Verifica se existem respostas no relatório
+          if (respostas.length === 0) {
+            alert("Nenhum relatório encontrado para o exame informado.");
+            return;
           }
-        });
+
+          // Processar os dados do relatório conforme necessário
+          var reportHTML = '<h2>Exam Report</h2><table><tr><th>User ID</th><th>Question</th><th>Answer</th><th>Correct Answer</th><th>Score</th></tr>';
+          for (var i = 0; i < respostas.length; i++) {
+            var resposta = respostas[i];
+            reportHTML += '<tr>';
+            reportHTML += '<td>' + resposta.aluno + '</td>';
+            reportHTML += '<td>' + resposta.questao + '</td>';
+            reportHTML += '<td>' + resposta.resposta_aluno + '</td>';
+            reportHTML += '<td>' + resposta.resposta_correta + '</td>';
+            reportHTML += '<td>' + resposta.pontuacao + '</td>';
+            reportHTML += '</tr>';
+          }
+          reportHTML += '</table>';
+
+          // Exibir o relatório na div com o ID "reportContainer"
+          $('#reportContainer').html(reportHTML);
+          $('#reportContainer').show();
+
+          // Resetar o formulário
+          form[0].reset();
+        },
+        error: function(xhr, textStatus, error) {
+          var errorMessage = xhr.responseJSON.error;
+          alert(errorMessage);
+        }
       });
     });
+  });
 
     //Close exam form
     $(document).ready(function() {

@@ -43,17 +43,6 @@ def login_route():
 def create_exam_route():
     return create_exam()
 
-
-# @app.route('/exames/<int:exame_id>/responder', methods=['POST'])
-# def responder_exame_route(exame_id):
-#     return responder_exame(exame_id)
-
-
-# @app.route('/exames/<int:exame_id>/relatorio', methods=['GET'])
-# def exam_report_route(exame_id):
-#     return relatorio_exame(exame_id)
-
-
 @app.route('/questions', methods=['POST'])
 def create_question_route():
     return create_question()
@@ -168,7 +157,7 @@ def exam_report_route(exame_id):
 
     user_id = session.get('usuario_id')  # Retrieve the user_id from the session
 
-    if 'professor' in session:
+    if 'professor' in session.get('profile'):
         # If the user is a teacher, retrieve all exam submissions
         all_submissions = Answer.query.filter_by(exame_id=exame_id).all()
 
@@ -194,6 +183,7 @@ def exam_report_route(exame_id):
         for submission in user_submission:
             questao = Question.query.get(submission.questao_id)
             respostas.append({
+                "aluno": user_id,
                 "questao": questao.question,
                 "resposta_aluno": submission.resposta,
                 "resposta_correta": questao.answer,
@@ -201,6 +191,7 @@ def exam_report_route(exame_id):
             })
 
         return jsonify({"respostas": respostas})
+
 
 # Route to load questions based on the exam ID
 @app.route('/exames/<int:exame_id>/questions', methods=['GET'])

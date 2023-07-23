@@ -101,6 +101,7 @@ def login():
         usuario = User.query.filter_by(username=data['usuario']).first()
         if usuario and usuario.password == data['senha']:
             session['usuario_id'] = usuario.id
+            session['profile'] = usuario.profile
             if usuario.profile == 'professor':
                 return render_template('dashboard.html', css_file='styles.css')
             elif usuario.profile == 'estudante':
