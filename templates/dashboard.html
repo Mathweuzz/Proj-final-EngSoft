@@ -94,34 +94,7 @@
         </form>
       </div>
 
-        <div class="grid-item">
-            <h2>Results</h2>
-            <form id="ResultsForm" action="/visualizar_resultados">
-                <label for="exameId">Exam ID:</label>
-                <input type="text" id="exameId" name="exameID" required>
-
-                <label for="turma">Class:</label>
-                <input type="text" id="turma" name="turma" required>
-
-                <label for="disciplina">Discipline:</label>
-                <input type="text" id="disciplina" name="disciplina" required>
-
-                <label for="periodo">Period:</label>
-                <input type="text" id="periodo" name="periodo" required>
-
-                <input type="submit" value="View">
-            </form>
-        </div>
-        <div class="grid-item">
-          <h2>Evaluate Exam</h2>
-          <form id="evaluateExamForm">
-            <label for="exameId">Exam ID:</label>
-            <input type="text" id="exameId" name="exameId" required>
-            <br><br>
-            <button type="submit">Evaluate Exam</button>
-          </form>
-    
-        </div>
+       
     </div>
   </div>
 
@@ -302,29 +275,6 @@
         $.ajax({
           type: 'POST',
           url: '/exames/' + exameId + '/close',
-          success: function(response) {
-            alert(response.message);
-            form[0].reset();
-          },
-          error: function(xhr, textStatus, error) {
-            var errorMessage = xhr.responseJSON.error;
-            alert(errorMessage);
-          }
-        });
-      });
-    });
-
-    //Evaluate exam form
-    $(document).ready(function() {
-      $('#evaluateExamForm').submit(function(event) {
-        event.preventDefault();
-    
-        var form = $(this);
-        var exameId = form.find('#exameId').val();
-    
-        $.ajax({
-          type: 'POST',
-          url: '/exames/' + exameId + '/avaliar',
           success: function(response) {
             alert(response.message);
             form[0].reset();

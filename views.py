@@ -36,7 +36,7 @@ def login_route():
         return login()
     else:
         error = None
-        return render_template('login.html', error=error, css_file='styles.css')
+        return render_template('index.html', error=error, css_file='styles.css')
 
 
 @app.route('/exames', methods=['GET', 'POST'])
@@ -51,12 +51,6 @@ def create_question_route():
 @app.route('/exames/<int:exame_id>/close', methods=['POST'])
 def close_exam_route(exame_id):
     return close_exam(exame_id)
-
-
-@app.route('/visualizar_resultados')
-def visualizar_resultados_route():
-    return visualizar_resultados()
-
 
 @app.route('/exames/<int:exame_id>/avaliar', methods=['POST'])
 def evaluate_exam_route(exame_id):
