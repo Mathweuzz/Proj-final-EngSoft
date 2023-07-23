@@ -173,25 +173,29 @@
           type: 'GET',
           url: '/exames/' + exameId + '/relatorio',
           success: function (response) {
-            var respostas = response.respostas;
+            if (response.error) {
+              alert(response.error); // Exibe mensagem de erro, se houver
+            } else {
+              // Processar os dados do relatório e exibir na tela
+              var respostas = response.respostas;
 
-            // Processar os dados do relatório
-            var reportContent = '<h2>Exam Report</h2>';
-            reportContent += '<table>';
-            reportContent += '<tr><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Score</th></tr>';
-            respostas.forEach(function (resposta) {
-              reportContent += '<tr>';
-              reportContent += '<td>' + resposta.questao + '</td>';
-              reportContent += '<td>' + resposta.resposta_aluno + '</td>';
-              reportContent += '<td>' + resposta.resposta_correta + '</td>';
-              reportContent += '<td>' + resposta.pontuacao + '</td>';
-              reportContent += '</tr>';
-            });
-            reportContent += '</table>';
+              var reportContent = '<h2>Exam Report</h2>';
+              reportContent += '<table>';
+              reportContent += '<tr><th>Question</th><th>Your Answer</th><th>Correct Answer</th><th>Score</th></tr>';
+              respostas.forEach(function (resposta) {
+                reportContent += '<tr>';
+                reportContent += '<td>' + resposta.questao + '</td>';
+                reportContent += '<td>' + resposta.resposta_aluno + '</td>';
+                reportContent += '<td>' + resposta.resposta_correta + '</td>';
+                reportContent += '<td>' + resposta.pontuacao + '</td>';
+                reportContent += '</tr>';
+              });
+              reportContent += '</table>';
 
-            // Display the report content
-            $('#reportContainer').html(reportContent);
-            $('#reportContainer').show();
+              // Exibe o relatório no container
+              $('#reportContainer').html(reportContent);
+              $('#reportContainer').show();
+            }
           },
           error: function (xhr, textStatus, error) {
             var errorMessage = xhr.responseJSON.error;

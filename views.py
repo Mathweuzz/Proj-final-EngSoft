@@ -97,12 +97,14 @@ def responder_exame_route(exame_id):
     if not exame:
         return jsonify({"error": "Exame não encontrado"})
 
+    if exame.status == 'encerrado':
+        return jsonify({"error": "O exame já foi encerrado. Não é permitido responder novamente."})
+
     # Verificar se o aluno já respondeu o exame anteriormente
     user_id = session['usuario_id']
     user_has_answered = Answer.query.filter_by(exame_id=exame_id, user_id=user_id).first()
 
     if user_has_answered:
-        print('entrou aqui')
         return jsonify({"error": "Você já respondeu esse exame. Não é permitido responder novamente."})
 
     data = request.get_json()
@@ -152,8 +154,6 @@ def responder_exame_route(exame_id):
 
     return jsonify({"feedback": feedback, "total_score": total_score})
 
-
-
 # Route to generate the exam report for the student
 @app.route('/exames/<int:exame_id>/relatorio', methods=['GET'])
 def exam_report_route(exame_id):
@@ -165,6 +165,7 @@ def exam_report_route(exame_id):
     user_id = session.get('usuario_id')  # Retrieve the user_id from the session
 
     if 'professor' in session.get('profile'):
+        print('teste')
         # If the user is a teacher, retrieve all exam submissions
         all_submissions = Answer.query.filter_by(exame_id=exame_id).all()
 
@@ -182,6 +183,8 @@ def exam_report_route(exame_id):
         return jsonify({"respostas": respostas})
 
     else:
+        if exame.status == 'aberto':
+            return jsonify({"error": "O relatório ainda não pode ser gerado, pois o exame está aberto."})
         # If the user is a student, retrieve their exam submission only
         user_submission = Answer.query.filter_by(
             exame_id=exame_id, user_id=user_id).all()
@@ -199,7 +202,6 @@ def exam_report_route(exame_id):
 
         return jsonify({"respostas": respostas})
 
-
 # Route to load questions based on the exam ID
 @app.route('/exames/<int:exame_id>/questions', methods=['GET'])
 def load_exam_questions(exame_id):
@@ -207,6 +209,9 @@ def load_exam_questions(exame_id):
 
     if not exame:
         return jsonify({"error": "O exame não foi encontrado"})
+    
+    if exame.status == 'encerrado':
+        return jsonify({"error": "O exame já foi encerrado. Não é permitido responder novamente."})
 
     questions = exame.questions
     questions_data = [{"id": question.id, "question": question.question} for question in questions]
