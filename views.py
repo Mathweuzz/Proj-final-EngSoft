@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_cors import CORS
 from controllers import seed_data, registro, login, create_exam, responder_exame, relatorio_exame, create_question, close_exam, visualizar_resultados, avaliar_exame
 from models import User, Question, Answer, Exam, db  
@@ -205,6 +205,12 @@ def load_exam_questions(exame_id):
     questions_data = [{"id": question.id, "question": question.question} for question in questions]
 
     return jsonify({"questions": questions_data})
+
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session.pop('usuario_id', None)
+    return redirect(url_for('login_route'))
 
 if __name__ == '__main__':
     app.run(debug=True)
