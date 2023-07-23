@@ -1,87 +1,295 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-br">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Exames Online</title>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(90deg, #C7C5F4, #776BCC);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    font-family: Arial, sans-serif;
-    color: #fff;
-  }
+  <title>Login</title>
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="author" content="TaylorShady">
+  <style>
+    /* Estilos do arquivo estilook.css */
 
-  h1 {
-    font-size: 32px;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  }
+    * {
+      padding: 0px;
+      margin: 0px;
+      box-sizing: border-box;
+      text-decoration: none;
+      outline: none;
+    }
 
-  p {
-    font-size: 18px;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  }
+    body {
+      font-family: open sans, arial;
+      background: linear-gradient(to left, #8E2DE2, #4A00E0);
+      display: flex;
+      justify-content: flex-end;
+      height: 100vh;
+    }
 
-  form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+    form h3 {
+      font-size: 17px;
+      margin-bottom: 30px;
+      padding-left: 40px;
+    }
 
-  button {
-    padding: 10px 20px;
-    background-color: #5D54A4;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 0 10px;
-    font-size: 16px;
-    margin-bottom: 10px;
-  }
+    .formulario {
+      background-color: #ffffff;
+      width: 500px;
+      height: 100vh;
+      box-shadow: 50px 50px 80px black;
+    }
 
-  button:hover {
-      background-color: #6A679E;
-  }
+    .fa-user {
+      position: absolute;
+      margin-top: 70px;
+      padding-left: 8px;
+      color: #878787;
+    }
 
-  .container-index {
-    text-align: center;
-    padding: 50px;
-    background-color: #80808080;
-    border-radius: 2rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: all 500ms ease-in-out;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+    .fa-key {
+      position: absolute;
+      margin-top: 25px;
+      padding-left: 8px;
+      color: #878787;
+    }
 
-  .container-index:hover {
-    transform: scale(110%);
-  }
-</style>
+    form {
+      display: flex;
+      width: 400px;
+      height: 100vh;
+      margin: 0 auto;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 30px;
+    }
+
+    .redesocialtext {
+      display: flex;
+    }
+
+    .fa-fw {
+      margin-right: 5px;
+    }
+
+    #entrarfacebook {
+      background-color: #2b4a8a;
+      padding: 5px 5px;
+      font-size: 11px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 5px;
+    }
+
+    #entrartwitter {
+      background-color: #4c6ef5;
+      padding: 5px 5px;
+      font-size: 11px;
+      color: white;
+      margin-left: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      letter-spacing: 0.50px;
+      border-radius: 5px;
+    }
+
+    #entrarfacebook:hover {
+      background-color: #214082;
+    }
+
+    #entrartwitter:hover {
+      background-color: #304dbd;
+    }
+
+    label {
+      font-size: 15px;
+      font-weight: bold;
+      margin-top: 7px;
+      margin-bottom: 7px;
+      color: #9a9a9a;
+    }
+
+    input[type=password] {
+      background-color: transparent;
+      width: 260px;
+      padding: 8px 30px;
+      border: solid 1px #d0d0d0;
+      color: #656565;
+      font-family: open sans, arial;
+      font-weight: bold;
+    }
+
+    input[type=text] {
+      background-color: transparent;
+      width: 260px;
+      padding: 8px 30px;
+      border: solid 1px #d0d0d0;
+      color: #656565;
+      font-family: open sans, arial;
+      font-weight: bold;
+    }
+
+    input[type=checkbox] {
+      margin-top: 20px;
+    }
+
+    #conectado {
+      position: absolute;
+      margin-top: 69px;
+      margin-left: 18px;
+      font-size: 12px;
+    }
+
+    .bntlogin {
+      display: flex;
+      margin-top: 20px;
+    }
+
+    #bntlogin1 {
+      background: linear-gradient(to left, #8E2DE2, #4A00E0);
+      width: 80px;
+      padding: 8px;
+      margin: 5px;
+      font-size: 12px;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-family: arial;
+      font-weight: bold;
+    }
+
+    #bntlogin1:hover {
+      background-color: #6e10ce;
+      color: white;
+    }
+
+    #bntlogin2 {
+      border: solid 1px #b6b7b9;
+      width: 80px;
+      padding: 8px;
+      margin: 5px;
+      font-size: 12px;
+      color: #424242;
+      font-weight: bold;
+      cursor: pointer;
+      background-color: transparent;
+      border-radius: 5px;
+    }
+
+    #esqueceu {
+      color: #797979;
+      font-size: 13px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    #esqueceu:hover {
+      color: #4a4a4b;
+    }
+
+    /* Estilos da caixatexto */
+
+    .caixatexto {
+      max-width: 450px;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      margin: 0 auto;
+      flex-direction: column;
+    }
+
+    .caixatexto h1 {
+      color: white;
+    }
+
+    .caixatexto small {
+      color: white;
+      font-size: 40px;
+    }
+
+    .caixatexto p {
+      font-size: 13px;
+      color: white;
+      margin-top: 10px;
+      margin-bottom: 15px;
+    }
+
+    #bnt1 {
+      padding: 10px 18px;
+      background-color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+      color: #8c38e1;
+      transition: 0.3s;
+    }
+
+    #bnt1:hover {
+      background-color: #6e10ce;
+      color: white;
+    }
+
+    #bnt2 {
+      padding: 10px 18px;
+      background-color: transparent;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+      border: solid 1px white;
+      color: white;
+      transition: 0.3s;
+    }
+
+    #bnt2:hover {
+      background-color: white;
+      color: #6e10ce;
+    }
+  </style>
 </head>
 
 <body>
-    <div class="container-index">
-      <h1>Bem-vindo ao nosso Sistema de Exames Online!</h1>
-      <p>Por favor, escolha uma opção:</p>
-      <form method="GET" action="{{ url_for('register_route') }}">
-        <button type="submit">Registro</button>
-      </form>
-      <form method="GET" action="{{ url_for('login_route') }}">
-        <button type="submit">Login</button>
-      </form>
+
+  <div class="caixatexto">
+    <h1>Bem-vindo ao <br><small>CorrijeFácil!</small></h1>
+    
+    <div class="caixabnt">
+      <a href="#"><button id="bnt1">Saiba mais</button></a>
+      <a href="#"><button id="bnt2">Sobre nós</button></a>
     </div>
+  </div>
+
+  <div class="formulario">
+  
+    <form method="POST" action="{{ url_for('login_route') }}">
+      <label for="usuario">Login</label>
+      <input type="text" name="usuario" id="usuario" required placeholder="Digite seu Usuário">
+      <i class="fas fa-key"></i>
+      <label for="senha">Senha:</label>
+      <input type="password" name="senha" id="senha" required placeholder="Digite sua Senha">
+      <div class="bntlogin">
+        <button id="bntlogin1" onclick="">Login</button>
+        <button id="bntlogin2" onclick="redirectToRegister()">Sign Up</button>
+      </div>
+      <a id="esqueceu" href="#">Esqueceu sua senha? Clique aqui</a>
+    </form>
+  </div>
+
+  
+  </form>
+
+  <!-- Script para redirecionar para a rota de registro -->
+  <script>
+    function redirectToRegister() {
+      window.location.href = "{{ url_for('register_route') }}";
+    }
+    function redirectToLogin() {
+      window.location.href = "{{ url_for('login_route') }}";
+    }
+    
+  </script>
+
 </body>
 
 </html>

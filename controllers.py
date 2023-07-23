@@ -109,7 +109,7 @@ def login():
         error = "Usuário ou senha inválidos"
     else:
         error = None
-    return render_template('login.html', error=error)
+    return render_template('index.html', error=error)
 
 
 def create_exam():
