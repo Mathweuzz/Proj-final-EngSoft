@@ -49,3 +49,11 @@ Há 5 testes pré definidos, com id de 1 à 5. Cada uma delas possui 2 questões
   questao2 = Question(question_type="Dissertativa", question='Quanto é meia dúzia?', answer='6', score='30')
 }
 ```
+
+# Testes
+
+Para rodar os testes, basta executar o comando
+
+```bash
+pytest --disable-warnings
+```
