@@ -59,9 +59,18 @@
     $('#exameIdHidden').val(exameId);
 
     questions.forEach(function (question) {
+        var additionalInfo = '';
+        if (question.question_type === 'true_false') {
+            additionalInfo = 'Verdadeiro ou Falso';
+        } else if (question.question_type === 'dissertation') {
+            additionalInfo = 'Escreva';
+        } else if (question.question_type === 'multiple_choice') {
+            additionalInfo = 'Escolha uma opção: ' + question.options.join(', ');
+        }
       questionsList.append(
         '<h3>Questão ' + question.id + ':</h3>' +
         '<p>' + question.question + '</p>' +
+          '<p><strong>' + additionalInfo + '</strong></p>' +
         '<label for="questao' + question.id + '">Resposta:</label>' +
         '<br>' +
         '<textarea id="questao' + question.id + '" name="questao' + question.id + '" rows="5" required></textarea>' +

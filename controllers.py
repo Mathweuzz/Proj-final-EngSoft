@@ -16,8 +16,8 @@ def seed_data():
     db.session.add(ester)
 
     questao1 = Question(
-        question='Qual é a capital do Brasil?', answer='Brasília', score='30')
-    questao2 = Question(question='Quanto é meia dúzia?',
+        question_type="dissertation", question='Qual é a capital do Brasil?', answer='Brasília', score='30')
+    questao2 = Question(question_type="dissertation", question='Quanto é meia dúzia?',
                         answer='6', score='30')
     db.session.add(questao1)
     db.session.add(questao2)
@@ -207,14 +207,23 @@ def relatorio_exame(exame_id):
 
 def create_question():
     request_data = request.get_json()
+    question_type = request_data.get('question_type')
     question_text = request_data.get('question')
     answer_text = request_data.get('answer')
     score_text = request_data.get('score')
     if not question_text or not answer_text:
         return jsonify({'error': 'Missing required fields'}), 400
 
-    new_question = Question(question=question_text,
+    new_question = Question(question_type=question_type, question=question_text,
                             answer=answer_text, score=score_text)
+
+    if question_type == 'multiple_choice':
+        options = request_data.get('options')
+        if not options:
+            return jsonify({'error': 'Multiple-choice questions require at least one option'}), 400
+        new_question.options = options
+
+
     db.session.add(new_question)
     db.session.commit()
 

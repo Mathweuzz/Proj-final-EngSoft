@@ -12,6 +12,12 @@
       <div class="grid-item">
         <h2>Create Question</h2>
         <form id="questionForm" action="/questions" method="POST">
+            <label for="questionType">Question Type:</label>
+            <select id="questionType" name="question_type" required>
+                <option value="multiple_choice">Multiple Choice</option>
+                <option value="true_false">True or False</option>
+                <option value="dissertation">Dissertation</option>
+            </select><br><br>
           <!-- Question form fields -->
           <label for="questionText">Question:</label>
           <input type="text" id="questionText" name="question" required><br><br>
@@ -21,6 +27,11 @@
 
           <label for="scoreInput">Score:</label>
           <input type="number" id="scoreInput" name="score" required><br><br>
+
+            <div id="optionsField" style="display:none;">
+                <label for="options">Options (separate with commas):</label>
+                <input type="text" id="options" name="options">
+            </div>
 
           <input type="submit" value="Create Question">
         </form>
@@ -298,6 +309,14 @@
       }); 
       
     });
+
+    const questionTypeSelect = document.getElementById('questionType');
+    const optionsField = document.getElementById('optionsField');
+
+    questionTypeSelect.addEventListener('change', () => {
+        const selectedType = questionTypeSelect.value;
+        optionsField.style.display = selectedType === 'multiple_choice' ? 'block' : 'none';
+    })
   </script>
   
 </body>

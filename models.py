@@ -13,9 +13,13 @@ class User(db.Model):
 
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    question_type = db.Column(db.String(50), nullable=False)
     question = db.Column(db.String(500), nullable=False)
     answer = db.Column(db.String(500), nullable=False)
     score = db.Column(db.Integer, nullable=False)
+
+    options = db.Column(db.String(1000))
+
     def get_all_questions():
         return Question.query.all()
 
