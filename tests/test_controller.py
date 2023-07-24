@@ -2,7 +2,7 @@ import pytest
 from flask import Flask, session
 from flask_sqlalchemy import SQLAlchemy
 from models import db, User, Question, Exam, Answer
-from app import app
+from controller import app, seed_data
 
 # Configurações para o ambiente de testes
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
@@ -18,6 +18,7 @@ def client():
     with app.test_client() as client:
         with app.app_context():
             db.create_all()
+            seed_data()
             yield client
             db.session.remove()
             db.drop_all()
@@ -40,7 +41,7 @@ def test_register(client):
         perfil='estudante'
     ), follow_redirects=True)
 
-    assert "Usuário já existe".encode() in response.data
+    assert "Usuário registrado com sucesso".encode() in response.data
 
     # Teste de registro de usuário já existente
     response = client.post('/registro', data=dict(
@@ -202,10 +203,10 @@ def test_exam_report(client):
     # Registrar a resposta do estudante para a questão
     new_answer = Answer(
         user_id=new_user.id,
-        exame_id=new_exam.id,
-        questao_id=new_question.id,
-        resposta='Resposta Teste',
-        pontuacao=10
+        exam_id=new_exam.id,
+        question_id=new_question.id,
+        answer='Resposta Teste',
+        score=10
     )
     db.session.add(new_answer)
     db.session.commit()
@@ -269,6 +270,7 @@ def test_load_exam_questions(client):
     assert response.status_code == 200
     assert "Questão 1".encode() in response.data
     assert "Questão 2".encode() in response.data
+
 
 def test_check_exam_answered(client):
     # Registrar um estudante para testar a resposta do exame
