@@ -36,4 +36,4 @@
        - Critérios de Aceitação:
           -Eu devo poder ver a pontuação de cada aluno em um exame específico.
           -Eu devo poder ver a pontuação total de cada aluno em todos os exames realizados.
-          -Eu devo poder filtrar os resultados por turma, disciplina ou período.
+          -Eu devo poder filtrar pelo id de cada exame.
