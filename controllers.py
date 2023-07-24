@@ -122,18 +122,15 @@ def create_exam():
     description = data.get('description')
     questions = data.get('questions')
     total_score = data.get('total_score')
-    turma = data.get('turma')
-    disciplina = data.get('disciplina')
-    periodo = data.get('periodo')
 
-    if not status or not title or not description or not total_score or not turma or not disciplina or not periodo:
+    if not status or not title or not description or not total_score:
         return jsonify({"error": "Dados incompletos"})
 
     if not questions or not isinstance(questions, list):
         return jsonify({"error": "Questões inválidas"})
 
     new_exam = Exam(status=status, answered=False, title=title, description=description,
-                    total_score=total_score, turma=turma, disciplina=disciplina, periodo=periodo)
+                    total_score=total_score)
     db.session.add(new_exam)
 
     for question_data in questions:
@@ -271,11 +268,8 @@ def visualizar_resultados():
         return jsonify({"error": "Acesso não autorizado"})
 
     exame_id = request.args.get('exame_id')
-    turma = request.args.get('turma')
-    disciplina = request.args.get('disciplina')
-    periodo = request.args.get('periodo')
 
-    if not exame_id and not turma and not disciplina and not periodo:
+    if not exame_id:
         return jsonify({"error": "Filtros não especificados"})
 
     if exame_id:
@@ -304,13 +298,6 @@ def visualizar_resultados():
     for aluno in alunos:
         exames_respondidos = Exam.query.filter(
             Exam.id == Answer.exame_id, Answer.user_id == aluno.id, Exam.status == 'encerrado')
-        if turma:
-            exames_respondidos = exames_respondidos.filter_by(turma=turma)
-        if disciplina:
-            exames_respondidos = exames_respondidos.filter_by(
-                disciplina=disciplina)
-        if periodo:
-            exames_respondidos = exames_respondidos.filter_by(periodo=periodo)
 
         pontuacao_total = sum(exame.pontuacao for exame in exames_respondidos)
         resultados.append({

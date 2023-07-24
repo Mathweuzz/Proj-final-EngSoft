@@ -42,9 +42,6 @@ class Exam(db.Model):
     title = db.Column(db.String(200))
     description = db.Column(db.String(500))
     total_score = db.Column(db.Integer, nullable=False, default=0)
-    turma = db.Column(db.String(100))
-    disciplina = db.Column(db.String(100))
-    periodo = db.Column(db.String(100))
 
 
 exam_question = db.Table('exam_question',

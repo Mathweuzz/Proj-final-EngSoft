@@ -39,4 +39,4 @@
 1. O professor acessa a funcionalidade de visualização de resultados.
 2. O professor visualiza a pontuação de cada aluno em um exame específico.
 3. O professor visualiza a pontuação total de cada aluno em todos os exames realizados.
-4. O professor pode filtrar os resultados por turma, disciplina ou período.
+4. O professor pode filtrar os resultados pelo id do exame.

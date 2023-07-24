@@ -42,15 +42,6 @@
           <label for="totalScoreInput">Total Score:</label>
           <input type="number" id="totalScoreInput" name="total_score" required><br><br>
   
-          <label for="turmaInput">Class:</label>
-          <input type="text" id="turmaInput" name="turma" required><br><br>
-  
-          <label for="disciplinaInput">Discipline:</label>
-          <input type="text" id="disciplinaInput" name="disciplina" required><br><br>
-  
-          <label for="periodoInput">Period:</label>
-          <input type="text" id="periodoInput" name="periodo" required><br><br>
-  
           <label for="questionSelect">Select a Question:</label>
           <select id="questionSelect" name="questionSelect">
             <option value="" disabled selected>Select a question...</option>
@@ -195,9 +186,6 @@
       title: $('#titleInput').val(),
       description: $('#descriptionInput').val(),
       total_score: $('#totalScoreInput').val(),
-      turma: $('#turmaInput').val(),
-      disciplina: $('#disciplinaInput').val(),
-      periodo: $('#periodoInput').val(),
       questions: selectedQuestions
     }),
     contentType: 'application/json',
