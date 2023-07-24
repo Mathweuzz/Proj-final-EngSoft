@@ -143,7 +143,7 @@ def create_exam():
         new_exam.questions.append(question)
 
     db.session.commit()
-    return jsonify({"success": "Exame criado com sucesso"})
+    return jsonify({"success": f"Exame criado com sucesso. ID do novo exame: {new_exam.id}"})
 
 
 def responder_exame(exame_id):

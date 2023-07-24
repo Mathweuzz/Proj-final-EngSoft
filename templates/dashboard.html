@@ -201,7 +201,7 @@
     }),
     contentType: 'application/json',
     success: function(response) {
-      alert(response.message);
+      alert(response.success);
       form[0].reset();
       selectedQuestions = []; // Reset the selected questions
       $('#selectedQuestionsContainer').empty(); // Clear the selected questions display
