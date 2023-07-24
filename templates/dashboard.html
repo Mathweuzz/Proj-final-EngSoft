@@ -134,6 +134,7 @@
       success: function(response) {
         alert(response.message);
         form[0].reset();
+        location.reload();
       },
       error: function(xhr, textStatus, error) {
         var errorMessage = xhr.responseJSON.error;
