@@ -66,7 +66,7 @@
         } else if (question.question_type === 'dissertation') {
             additionalInfo = 'Escreva a resposta no campo abaixo';
         } else if (question.question_type === 'multiple_choice') {
-            additionalInfo = 'Escolha uma opção: ' + question.options.join(', ');
+            additionalInfo = 'Escolha uma opção: ' + '<br>' +  question.options;
         }
       questionsList.append(
         '<h3>Questão ' + question.id + ':</h3>' +
