@@ -1,17 +1,34 @@
 # Proj-final-EngSoft
 
-Repositório do projeto
+## Repositório do projeto
 https://github.com/Mathweuzz/Proj-final-EngSoft
 
-Participantes
-
+## Participantes
 Eduardo Marques Pereira - 211021004
-
 Gabriel Amaro Baxto - 190087331
-
 Mateus Gomes de Araújo - 202014440
-
 Yan Tavares de Oliveira - 202014323
+
+# Relatório: Entrega 1
+
+## Planejamento inicial
+Para o início da interação, foi decidido que iríamos separar as tarefas e fornecer um overview geral após a conclusão da tarefa. Portanto, teríamos que produzir Estórias de usuário que atendessem às diretrizes SMART (Specific, Measurable, Achievable, Relevant, Time-bound) e seguindo o padrão recomendado no livro. Após isso, criar e configurar o repositório inicial do projeto, contendo uma página inicial, funcionalidades de registro e login. Por fim, precisaríamos produzir este relatório. Separamos as tarefas entre os quatro participantes, além de estabelecer a responsabilidade coletiva de cumprir os prazos e desenvolver o código fonte do projeto.
+
+
+## Concluído
+Com o estabelecimento das tarefas, partimos para a produção dos requisitos da entrega 1, produzimos uma boa quantidade de estórias de usuário e concluímos o que foi pedido acerca do repositório inicial. Através do planejamento que foi feito, conseguimos concluir todas as tarefas requisitadas e estão todas submetidas nessa entrega.
+
+
+## Estado atual do projeto
+Até o momento concluímos completamente a entrega 1 do projeto. Finalizamos as Estórias de usuário e repositório inicial. Os requisitos RD.01, RA.01 e RP.04 já estão em andamento.
+
+
+## Próximos passos
+Para a próxima interação, colocamos na esteira de produção um MVP, com a estrutura básica que permita aplicar exames, assim como é pedido na Entrega 2. Para isso, iniciamos alguns dos requisitos mínimos e estabelecemos um cronograma de entrega do conjunto de requisitos.
+
+
+## Sprint Review
+A primeira entrega não trouxe grandes dificuldades, mas foi ideal para iniciar o projeto da forma certa. A primeira entrega nos permitiu entender o trabalho como um todo e estabelecer o que devemos fazer nos próximos passos. Estamos animados para o desenvolvimento do projeto.
 
 # Relatório da Entrega 2
 
@@ -78,20 +95,20 @@ O que foi mal =(
 
 # Relatório da Entrega 3
 
-O objetivo da Entrega 2 foi finalizar todas as tarefas planejadas de acordo com o documento "Doc. de Especificação". Durante a interação, foram definidos os seguintes itens:
+Para a entrega 3, o nosso objetivo era submeter o sistema de aplicação de exames online mais completo possível. Tivemos alguns desafios, mas acreditamos que conseguimos superá-los e assim realizamos um ótimo trabalho. No decorrer do desenvolvimento, foram definidos os seguintes itens:
 
 ## O que foi planejado no início da interação:
 
-1. Implementar dashboards funccionais para aluno e professor.
+1. Implementar dashboards funcionais para aluno e professor.
 2. Desenvolver a funcionalidade de correção automática de provas e relatórios mais detalhados.
-3. Implementação de diferentes tipos de questão (Múltipla esocolha e Verdadeiro ou Falso).
+3. Implementação de diferentes tipos de questão (Múltipla escolha e Verdadeiro ou Falso).
 4. Criação de um design limpo e responsivo para o site.
 5. Adição de testes automatizados para garantir a qualidade do código.
 6. Refatoração do código para melhor organização e legibilidade.
 
 ## O que foi concluído:
 
-1. Issue #7: Implementação de dashboards funccionais para aluno e professor.
+1. Issue #7: Implementação de dashboards funcionais para aluno e professor.
 2. Issue #8: Desenvolvimento da funcionalidade de correção automática de provas e relatórios mais detalhados.
 3. Issue #9: Implementação de diferentes tipos de questão (Múltipla ecolha e Verdadeiro ou Falso).
 4. Issue #10: Criação de um design limpo e responsivo para o site.
@@ -106,7 +123,7 @@ N/A
 
 ## Estado atual do projeto:
 
-O projeto já é funcional e atende a todos os requisitos descritos no documento "Doc. de Especificação". Além disso, mudanças no sesign do site garantem uma experiência mais intuitiva e agradável para o usuário. As funções implementadas são:
+O projeto já é funcional e atende a todos os requisitos descritos no documento "Doc. de Especificação". Além disso, mudanças no design do site garantem uma experiência mais intuitiva e agradável para o usuário. As funções implementadas são:
 
 - RA.01 - O sistema deve fornecer meios para autenticação de usuários com perfis de Professores e Estudantes.
 - RP.01 - Cadastrar questões do tipo múltipla escolha.
@@ -124,15 +141,7 @@ O projeto já é funcional e atende a todos os requisitos descritos no documento
 - RG.01 - O sistema deve fornecer uma interface amigável e intuitiva para facilitar a interação dos usuários.
 - RG.02 - O sistema deve ser responsivo, ou seja, adaptar-se a diferentes dispositivos (como computadores, tablets e smartphones) para oferecer uma experiência consistente.
 - RG.03 - O sistema deve ser capaz de armazenar e recuperar dados de forma confiável, garantindo a integridade das informações. Deve ser utilizado um banco de dados.
-- RD.01 - Para facilitar os testes, o sistema deve ser possível executar o sistema com SQLLite. O projeto deve incluir dados pre-carregado (seed) com seguintes as seguintes informações:
-  usuário: “pedro”, email: “pedro@unb.br”, senha: “asdfg”, perfil: professor
-  usuário: “ester”, email: “ester@unb.br” senha: “asdfg”, perfil: estudante
-  algumas questões
-  alguns exames em abertos e não respondidos pela ester
-  alguns exames em abertos e já respondidos pela ester
-  alguns exame agendados
-  alguns exames encerrados, e já respondidos pela ester
-  alguns exames encerrados, e não respondidos pela ester
+- RD.01 - Para facilitar os testes, o sistema deve ser possível executar o sistema com SQLLite. O projeto deve incluir dados pre-carregado (seed) com seguintes as seguintes informações: usuário: “pedro”, email: “[pedro@unb.br](mailto:pedro@unb.br)”, senha: “asdfg”, perfil: professor usuário: “ester”, email: “[ester@unb.br](mailto:ester@unb.br)” senha: “asdfg”, perfil: estudante algumas questões alguns exames em abertos e não respondidos pela ester alguns exames em abertos e já respondidos pela ester alguns exame agendados alguns exames encerrados, e já respondidos pela ester alguns exames encerrados, e não respondidos pela ester
 - RQ.01 - O sistema deve seguir a arquitetura MVC
 - RQ.02 - O sistema deve seguir a terminologia descrita nessa especificação quando aplicável, tanto na interface do usuário quanto no código do projeto.
 - RQ.03 - O sistema deve seguir princípios DRY quanto aos templates (camada view)
