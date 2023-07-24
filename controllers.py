@@ -33,18 +33,10 @@ def seed_data():
     exame2.questions.append(questao1)
     db.session.add(exame2)
 
-    exame3 = Exam(status='agendado', answered=False)
+    exame3 = Exam(status='agendado', answered=False, title='Exame de Português',
+                  description='Exame de Português Básico', total_score='60')
     exame3.questions.append(questao2)
     db.session.add(exame3)
-
-    exame4 = Exam(status='encerrado', answered=True)
-    exame4.questions.append(questao1)
-    exame4.questions.append(questao2)
-    db.session.add(exame4)
-
-    exame5 = Exam(status='encerrado', answered=False)
-    exame5.questions.append(questao1)
-    db.session.add(exame5)
 
     db.session.commit()
 
