@@ -129,6 +129,13 @@
     });
   });
 
+  $(document).ready(function() {
+  $('#exameForm').submit(function(event) {
+    event.preventDefault(); // Prevent the form from submitting normally
+    $('#loadQuestionsBtn').click(); // Trigger the click event of the button
+  });
+});
+
     // Envio do formulário de resposta
     $(document).ready(function () {
       $('#responderExameForm').submit(function (event) {
