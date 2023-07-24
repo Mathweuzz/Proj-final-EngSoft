@@ -222,7 +222,7 @@ def load_exam_questions(exame_id):
         return jsonify({"error": "O exame já foi encerrado. Não é permitido responder novamente."})
 
     questions = exame.questions
-    questions_data = [{"id": question.id, "question": question.question}
+    questions_data = [{"id": question.id, "question": question.question, "question_type": question.question_type}
                       for question in questions]
 
     return jsonify({"questions": questions_data})

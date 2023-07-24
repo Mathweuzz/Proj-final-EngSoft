@@ -60,10 +60,11 @@
 
     questions.forEach(function (question) {
         var additionalInfo = '';
+        console.log(question);
         if (question.question_type === 'true_false') {
-            additionalInfo = 'Verdadeiro ou Falso';
+            additionalInfo = 'Preencha com "V" para verdadeiro ou "F" para falso';
         } else if (question.question_type === 'dissertation') {
-            additionalInfo = 'Escreva';
+            additionalInfo = 'Escreva a resposta no campo abaixo';
         } else if (question.question_type === 'multiple_choice') {
             additionalInfo = 'Escolha uma opção: ' + question.options.join(', ');
         }
