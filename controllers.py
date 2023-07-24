@@ -337,3 +337,150 @@ def avaliar_exame(exame_id):
         })
 
     return jsonify({"resultados": resultados})
+
+
+def responder_exame(exame_id):
+    if 'usuario_id' not in session:
+        return jsonify({"error": "Acesso não autorizado"})
+
+    exame = Exam.query.get(exame_id)
+    if not exame:
+        return jsonify({"error": "Exame não encontrado"})
+
+    if exame.status == 'encerrado':
+        return jsonify({"error": "O exame já foi encerrado. Não é permitido responder novamente."})
+
+    # Verificar se o aluno já respondeu o exame anteriormente
+    user_id = session['usuario_id']
+    user_has_answered = Answer.query.filter_by(
+        exame_id=exame_id, user_id=user_id).first()
+
+    if user_has_answered:
+        return jsonify({"error": "Você já respondeu esse exame. Não é permitido responder novamente."})
+
+    data = request.get_json()
+    respostas = data.get('respostas')
+
+    if not respostas:
+        return jsonify({"error": "Nenhuma resposta fornecida"})
+
+    total_score = 0
+    feedback = []
+    for questao_id, resposta_aluno in respostas.items():
+        questao = Question.query.get(int(questao_id))
+        if not questao:
+            return jsonify({"error": "Questão não encontrada"})
+
+        score = 0
+        if resposta_aluno == questao.answer:
+            score = questao.score
+            total_score += score
+
+        feedback.append({
+            "questao": questao.question,
+            "resposta_aluno": resposta_aluno,
+            "resposta_correta": questao.answer,
+            "pontuacao": score
+        })
+
+        # Salvar as respostas do aluno no banco de dados (se necessário)
+        nova_resposta = Answer(
+            exame_id=exame_id,
+            questao_id=int(questao_id),
+            resposta=resposta_aluno,
+            user_id=user_id,
+            pontuacao=score
+        )
+        db.session.add(nova_resposta)
+
+    # Atualizar a pontuação total do aluno para o exame no modelo Answer
+    user_answers = Answer.query.filter_by(
+        exame_id=exame_id, user_id=user_id).all()
+    total_score_user = sum(answer.pontuacao for answer in user_answers)
+
+    # Atualizar a pontuação total do exame no modelo Exam
+    exame.total_score = total_score
+
+    exame.answered = True
+    db.session.commit()
+
+    return jsonify({"feedback": feedback, "total_score": total_score})
+
+
+def exam_report(exame_id):
+    exame = Exam.query.get(exame_id)
+
+    if not exame:
+        return jsonify({"error": "O exame não foi encontrado"})
+
+    # Retrieve the user_id from the session
+    user_id = session.get('usuario_id')
+
+    if 'professor' in session.get('profile'):
+        print('teste')
+        # If the user is a teacher, retrieve all exam submissions
+        all_submissions = Answer.query.filter_by(exame_id=exame_id).all()
+
+        respostas = []
+        for submission in all_submissions:
+            questao = Question.query.get(submission.questao_id)
+            respostas.append({
+                "aluno": submission.user_id,
+                "questao": questao.question,
+                "resposta_aluno": submission.resposta,
+                "resposta_correta": questao.answer,
+                "pontuacao": submission.pontuacao
+            })
+
+        return jsonify({"respostas": respostas})
+
+    else:
+        if exame.status == 'aberto':
+            return jsonify({"error": "O relatório ainda não pode ser gerado, pois o exame está aberto."})
+        # If the user is a student, retrieve their exam submission only
+        user_submission = Answer.query.filter_by(
+            exame_id=exame_id, user_id=user_id).all()
+
+        respostas = []
+        for submission in user_submission:
+            questao = Question.query.get(submission.questao_id)
+            respostas.append({
+                "aluno": user_id,
+                "questao": questao.question,
+                "resposta_aluno": submission.resposta,
+                "resposta_correta": questao.answer,
+                "pontuacao": submission.pontuacao
+            })
+
+        return jsonify({"respostas": respostas})
+
+
+def load_exam_questions(exame_id):
+    exame = Exam.query.get(exame_id)
+
+    if not exame:
+        return jsonify({"error": "O exame não foi encontrado"})
+
+    if exame.status == 'encerrado':
+        return jsonify({"error": "O exame já foi encerrado. Não é permitido responder novamente."})
+
+    questions = exame.questions
+    questions_data = [{"id": question.id, "question": question.question, "question_type": question.question_type}
+                      for question in questions]
+
+    return jsonify({"questions": questions_data})
+
+
+def check_exam_answered(exame_id):
+    user_id = session.get('usuario_id')
+    if not user_id:
+        # O aluno não está logado, então ainda não respondeu
+        return jsonify({"respondeu": False})
+
+    exame_respondido = Answer.query.filter_by(
+        exame_id=exame_id, user_id=user_id).first()
+    if exame_respondido:
+        return jsonify({"respondeu": True})  # O aluno já respondeu o exame
+    else:
+        # O aluno ainda não respondeu o exame
+        return jsonify({"respondeu": False})
