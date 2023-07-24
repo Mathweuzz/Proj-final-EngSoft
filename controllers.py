@@ -22,12 +22,14 @@ def seed_data():
     db.session.add(questao1)
     db.session.add(questao2)
 
-    exame1 = Exam(status='aberto', answered=False)
+    exame1 = Exam(status='aberto', answered=False, title='Exame de Geografia',
+                  description='Exame de Geografia do Brasil', total_score='60')
     exame1.questions.append(questao1)
     exame1.questions.append(questao2)
     db.session.add(exame1)
 
-    exame2 = Exam(status='aberto', answered=True)
+    exame2 = Exam(status='aberto', answered=True, title='Exame de Matemática',
+                  description='Exame de Matemática Básica', total_score='60')
     exame2.questions.append(questao1)
     db.session.add(exame2)
 
@@ -135,7 +137,10 @@ def create_exam():
 
     for question_data in questions:
         question_id = question_data.get('id')
-        # Add code to associate the question with the exam
+        question = Question.query.get(question_id)
+        if not question:
+            return jsonify({"error": "Questão não encontrada"})
+        new_exam.questions.append(question)
 
     db.session.commit()
     return jsonify({"success": "Exame criado com sucesso"})
@@ -222,7 +227,6 @@ def create_question():
         if not options:
             return jsonify({'error': 'Multiple-choice questions require at least one option'}), 400
         new_question.options = options
-
 
     db.session.add(new_question)
     db.session.commit()
